@@ -1,0 +1,2 @@
+class CombatUnitListEmpty(Exception):
+    pass

@@ -1,0 +1,2 @@
+class Squad(list):
+    pass
