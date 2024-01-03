@@ -3,6 +3,9 @@ from Entities.Map.terrain import Plains, Forest
 
 
 class Map:
+    MAP_BORDER = 60
+    TILE_RADIUS_PX = 20
+
     def __init__(self, x_length, y_length, name="TestMap"):
         self.x_length = x_length
         self.y_length = y_length
@@ -22,6 +25,15 @@ class Map:
             return tile.x_cor == x and tile.y_cor == y
 
         return next((tile for tile in self.__iter__() if has_cors(x_cor, y_cor, tile)))
+
+    def get_tile_px_placement(self, tile: Tile) -> tuple[int, int]:
+        found_tile = next(
+            (map_tile for map_tile in self.__iter__() if map_tile == tile)
+        )
+
+        return self.MAP_BORDER + (
+            found_tile.y_cor * self.TILE_RADIUS_PX * 2
+        ), self.MAP_BORDER + (found_tile.x_cor * self.TILE_RADIUS_PX * 2)
 
     def __iter__(self):
         return iter(self._tiles)
