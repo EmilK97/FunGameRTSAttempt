@@ -12,11 +12,11 @@ class CombatHandler:
     defender_squad: Squad
 
     def __init__(
-            self,
-            attacker_squad: Squad,
-            attacker_warlord: Warlord,
-            defender_squad: Squad,
-            defender_warlord: Warlord,
+        self,
+        attacker_squad: Squad,
+        attacker_warlord: Warlord,
+        defender_squad: Squad,
+        defender_warlord: Warlord,
     ):
         self.attacker_squad = attacker_squad
         self.attacker_warlord = attacker_warlord

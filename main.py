@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def is_squad_overlapping_with_any_of_squads(
-        squad: Squad, squads_to_check: list[Squad]
+    squad: Squad, squads_to_check: list[Squad]
 ) -> Optional[Squad]:
     for squad_to_check in squads_to_check:
         if squad_to_check.tile_location == squad.tile_location:
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # left click
-                    clicked_tile = (map.get_tile_py_px_click(event.pos[0], event.pos[1]))
+                    clicked_tile = map.get_tile_py_px_click(event.pos[0], event.pos[1])
                     print(clicked_tile)
                     if chosen_squad is None:
                         for squad in WarlordAttacker.squads:
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                     else:
                         chosen_squad.move_to_tile(clicked_tile)
                         if defender_squad := is_squad_overlapping_with_any_of_squads(
-                                chosen_squad, WarlordDefender.squads
+                            chosen_squad, WarlordDefender.squads
                         ):
                             CombatHandler(
                                 chosen_squad,
@@ -91,7 +91,7 @@ if __name__ == "__main__":
                     print(f"Chosen squad: {chosen_squad}")
 
                 if event.button == 3:  # right click
-                    clicked_tile = (map.get_tile_py_px_click(event.pos[0], event.pos[1]))
+                    clicked_tile = map.get_tile_py_px_click(event.pos[0], event.pos[1])
                     print(clicked_tile)
                     for squad in WarlordAttacker.squads + WarlordDefender.squads:
                         if squad.tile_location == clicked_tile:

@@ -1,0 +1,28 @@
+{
+    "Knight": {
+        "HP": 2,
+        "Strenght": 2,
+        "Faction": "EMPIRE",
+        "Race": "HUMAN",
+        "Sprite": ".PNG",
+        "Pay": 20,
+        "Speed": 20,
+        "Skills": [],
+        "Image": ".PNG",
+        "Tags": ["CAVALRY"],
+        "Name": "Empire Knight",
+    },
+    "Swordsman": {
+        "HP": 2,
+        "Strenght": 2,
+        "Faction": "EMPIRE",
+        "Race": "HUMAN",
+        "Sprite": ".PNG",
+        "Pay": 20,
+        "Speed": 20,
+        "Skills": [],
+        "Image": ".PNG",
+        "Tags": ["INFANTRY"],
+        "Name": "Swordsman",
+    },
+}
