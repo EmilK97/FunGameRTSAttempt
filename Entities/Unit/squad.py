@@ -1,7 +1,7 @@
 from Entities.Map.tile import Tile
 from Entities.Map.map import Map
 import pygame
-from Entities.Unit.trooper import Trooper
+from pygame import Surface
 from settings import SQUAD_ICON
 
 
@@ -14,7 +14,7 @@ class Squad(list, pygame.sprite.Sprite):
         self.image = pygame.image.load(SQUAD_ICON)
         self.rect = self.image.get_rect()
 
-    def draw(self, surface, map: Map):
+    def draw(self, surface: Surface, map: Map):
         self.rect.center = map.get_tile_px_placement(self._tile_location)
         surface.blit(self.image, self.rect)
 
@@ -24,10 +24,6 @@ class Squad(list, pygame.sprite.Sprite):
     @property
     def tile_location(self) -> Tile:
         return self._tile_location
-
-    def destroy_squad(self):
-        self.warlord.remove_squad(self)
-        del self
 
     def __str__(self):
         return f"Location: {self._tile_location}, units: {[str(_) for _ in self]}"

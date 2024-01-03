@@ -10,9 +10,21 @@ from Enums.colors import BLUE, RED, GREEN, WHITE
 from settings import RESOLUTION_X, RESOLUTION_Y, FSP_LIMIT
 from Enums.landscape import Landscape
 from Engine.combat import CombatHandler
+from pygame import Surface
 import random
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+def draw_map(map: Map, surface: Surface):
+    for tile in map:
+        pygame.draw.circle(
+            surface,
+            BLUE if tile.terrain.landscape == Landscape.PLAINS else GREEN,
+            map.get_tile_px_placement(tile),
+            Map.TILE_RADIUS_PX,
+        )
+
 
 if __name__ == "__main__":
     WarlordAttacker = Warlord("Attacker")
@@ -48,41 +60,28 @@ if __name__ == "__main__":
     while running:
         # Fill the background with white
         screen.fill(WHITE)
-
-        for tile in map:
-            pygame.draw.circle(
-                screen,
-                BLUE if tile.terrain.landscape == Landscape.PLAINS else GREEN,
-                map.get_tile_px_placement(tile),
-                Map.TILE_RADIUS_PX,
-            )
+        draw_map(map, screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.MOUSEBUTTONUP:
-                WarlordAttacker.squads[0].move_to_tile(
-                    map.get_tile_by_cors(0, random.randint(0, 8))
-                )
+                for attacker_squad in WarlordAttacker.squads:
+                    attacker_squad.move_to_tile(
+                        map.get_tile_by_cors(0, random.randint(0, 8))
+                    )
                 for defender_squad in WarlordDefender.squads:
                     if (
                         WarlordAttacker.squads[0].tile_location
                         == defender_squad.tile_location
                     ):
                         CombatHandler(
-                            WarlordAttacker.squads[0], WarlordDefender.squads[0]
+                            WarlordAttacker.squads[0],
+                            WarlordAttacker,
+                            WarlordDefender.squads[0],
+                            WarlordDefender,
                         ).execute_combat()
-                    if not defender_squad:
-                        WarlordDefender.remove_squad(defender_squad)
-
-            if event.type == pygame.MOUSEWHEEL:
-                pygame.draw.circle(
-                    screen,
-                    RED,
-                    (200, 200),
-                    100,
-                )
 
         [squad.draw(screen, map) for squad in WarlordAttacker.squads]
         [squad.draw(screen, map) for squad in WarlordDefender.squads]
