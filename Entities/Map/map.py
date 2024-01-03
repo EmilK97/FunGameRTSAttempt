@@ -6,7 +6,7 @@ from Enums.exceptions import TileOutOfMapRange
 
 class Map:
     MAP_BORDER = 60
-    TILE_RADIUS_PX = 24
+    TILE_RADIUS_PX = 25
 
     def __init__(self, x_length, y_length, name="TestMap"):
         self.x_length = x_length

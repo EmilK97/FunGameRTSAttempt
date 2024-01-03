@@ -4,3 +4,7 @@ class CombatUnitListEmpty(Exception):
 
 class TileOutOfMapRange(Exception):
     pass
+
+
+class SquadSizeLimitReach(Exception):
+    pass

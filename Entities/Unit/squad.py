@@ -5,16 +5,17 @@ from pygame import Surface
 
 from Entities.Map.map import Map
 from Entities.Map.tile import Tile
+from Enums.exceptions import SquadSizeLimitReach
 from settings import SQUAD_ICON
 
 
 class Squad(list, pygame.sprite.Sprite):
-    pass
+    SIZE_LIMIT = 8
 
-    def __init__(self, *args, starting_tile: Tile):
+    def __init__(self, *args, starting_tile: Tile, image_path: str = SQUAD_ICON):
         super().__init__(args)
         self._tile_location = starting_tile
-        self.image = pygame.image.load(SQUAD_ICON)
+        self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()
 
     def draw(self, surface: Surface, map: Map):
@@ -33,3 +34,12 @@ class Squad(list, pygame.sprite.Sprite):
 
     def __str__(self):
         return f"Location: {self._tile_location}, units: {[str(_) for _ in self]}"
+
+    def append(self, __object):
+        if len(self) >= self.SIZE_LIMIT:
+            raise SquadSizeLimitReach
+        super().append(__object)
+
+
+class Garnison(Squad):
+    SIZE_LIMIT = 16

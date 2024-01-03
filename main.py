@@ -11,6 +11,7 @@ from Entities.Unit.squad import Squad
 from Entities.Unit.undead_trooper import SkeletonRider, Skeleton
 from Entities.Warlord.warlord import Warlord
 from settings import RESOLUTION_X, RESOLUTION_Y, FSP_LIMIT
+from Enums.colors import RED
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -25,7 +26,7 @@ def is_squad_overlapping_with_any_of_squads(
 
 if __name__ == "__main__":
     WarlordAttacker = Warlord("Attacker")
-    WarlordDefender = Warlord("Defender")
+    WarlordDefender = Warlord("Defender", color=RED)
     map = Map(9, 16)
 
     WarlordAttacker.add_squad(
@@ -34,6 +35,7 @@ if __name__ == "__main__":
             starting_tile=map.get_tile_by_cors(3, 8),
         )
     )
+    WarlordAttacker.squads[0].append(Skeleton())
     WarlordAttacker.add_squad(
         Squad(
             Skeleton(),
