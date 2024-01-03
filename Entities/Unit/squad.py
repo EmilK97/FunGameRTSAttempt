@@ -1,7 +1,10 @@
-from Entities.Map.tile import Tile
-from Entities.Map.map import Map
+import logging
+
 import pygame
 from pygame import Surface
+
+from Entities.Map.map import Map
+from Entities.Map.tile import Tile
 from settings import SQUAD_ICON
 
 
@@ -19,7 +22,10 @@ class Squad(list, pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
     def move_to_tile(self, new_tile: Tile):
-        self._tile_location = new_tile
+        if new_tile:
+            self._tile_location = new_tile
+        else:
+            logging.warning(f"Failed to move - tile out of map range f{str(self)}")
 
     @property
     def tile_location(self) -> Tile:

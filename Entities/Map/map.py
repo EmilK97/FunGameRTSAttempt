@@ -1,10 +1,11 @@
 from Entities.Map.tile import Tile
 from Entities.Map.terrain import Plains, Forest
-
+from typing import Optional
+from Enums.exceptions import TileOutOfMapRange
 
 class Map:
     MAP_BORDER = 60
-    TILE_RADIUS_PX = 20
+    TILE_RADIUS_PX = 24
 
     def __init__(self, x_length, y_length, name="TestMap"):
         self.x_length = x_length
@@ -20,20 +21,33 @@ class Map:
 
         self._tiles = tuple(self._tiles)
 
-    def get_tile_by_cors(self, x_cor: int, y_cor: int) -> Tile:
+    def get_tile_by_cors(self, x_cor: int, y_cor: int) -> Optional[Tile]:
         def has_cors(x, y, tile):
             return tile.x_cor == x and tile.y_cor == y
 
-        return next((tile for tile in self.__iter__() if has_cors(x_cor, y_cor, tile)))
+        return next((tile for tile in self.__iter__() if has_cors(x_cor, y_cor, tile)), None)
 
     def get_tile_px_placement(self, tile: Tile) -> tuple[int, int]:
-        found_tile = next(
-            (map_tile for map_tile in self.__iter__() if map_tile == tile)
-        )
+        try:
+            found_tile = next(
+                (map_tile for map_tile in self.__iter__() if map_tile == tile)
+            )
 
-        return self.MAP_BORDER + (
-            found_tile.y_cor * self.TILE_RADIUS_PX * 2
-        ), self.MAP_BORDER + (found_tile.x_cor * self.TILE_RADIUS_PX * 2)
+            return self.MAP_BORDER + (
+                found_tile.y_cor * self.TILE_RADIUS_PX * 2
+            ), self.MAP_BORDER + (found_tile.x_cor * self.TILE_RADIUS_PX * 2)
+        except StopIteration:
+            raise TileOutOfMapRange
+
+    def get_tile_py_px_click(self, click_y:  int, click_x: int) -> Optional[Tile]:
+
+        clicked_x_cor = round((click_x - self.MAP_BORDER) / (2 *self.TILE_RADIUS_PX))
+        clicked_y_cor = round((click_y - self.MAP_BORDER) / (2 * self.TILE_RADIUS_PX))
+
+        return self.get_tile_by_cors(clicked_x_cor, clicked_y_cor)
+
+
+
 
     def __iter__(self):
         return iter(self._tiles)
