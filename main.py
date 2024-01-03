@@ -12,6 +12,7 @@ from Enums.landscape import Landscape
 from Engine.combat import CombatHandler
 from pygame import Surface
 import random
+from typing import Optional
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -26,6 +27,14 @@ def draw_map(map: Map, surface: Surface):
         )
 
 
+def is_squad_overlapping_with_any_of_squads(
+    squad: Squad, squads_to_check: list[Squad]
+) -> Optional[Squad]:
+    for squad_to_check in squads_to_check:
+        if squad_to_check.tile_location == squad.tile_location:
+            return squad_to_check
+
+
 if __name__ == "__main__":
     WarlordAttacker = Warlord("Attacker")
     WarlordDefender = Warlord("Defender")
@@ -35,9 +44,15 @@ if __name__ == "__main__":
     WarlordAttacker.add_squad(
         Squad(
             Skeleton(),
+            starting_tile=map.get_tile_by_cors(3, 8),
+        )
+    )
+    WarlordAttacker.add_squad(
+        Squad(
+            Skeleton(),
             SkeletonRider(),
             Skeleton(),
-            starting_tile=map.get_tile_by_cors(0, 1),
+            starting_tile=map.get_tile_by_cors(5, 1),
         )
     )
     WarlordDefender.add_squad(
@@ -69,17 +84,15 @@ if __name__ == "__main__":
             if event.type == pygame.MOUSEBUTTONUP:
                 for attacker_squad in WarlordAttacker.squads:
                     attacker_squad.move_to_tile(
-                        map.get_tile_by_cors(0, random.randint(0, 8))
+                        map.get_tile_by_cors(random.randint(0, 5), random.randint(0, 8))
                     )
-                for defender_squad in WarlordDefender.squads:
-                    if (
-                        WarlordAttacker.squads[0].tile_location
-                        == defender_squad.tile_location
+                    if defender_squad := is_squad_overlapping_with_any_of_squads(
+                        attacker_squad, WarlordDefender.squads
                     ):
                         CombatHandler(
-                            WarlordAttacker.squads[0],
+                            attacker_squad,
                             WarlordAttacker,
-                            WarlordDefender.squads[0],
+                            defender_squad,
                             WarlordDefender,
                         ).execute_combat()
 
