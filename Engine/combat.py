@@ -1,9 +1,10 @@
-from Entities.Unit.trooper import Trooper
-from time import sleep
-from Enums.exceptions import CombatUnitListEmpty
-from Entities.Unit.squad import Squad
 import logging
+from time import sleep
+
+from Entities.Unit.squad import Squad
+from Entities.Unit.trooper import Trooper
 from Entities.Warlord.warlord import Warlord
+from Enums.exceptions import CombatUnitListEmpty
 
 
 class CombatHandler:
@@ -11,11 +12,11 @@ class CombatHandler:
     defender_squad: Squad
 
     def __init__(
-        self,
-        attacker_squad: Squad,
-        attacker_warlord: Warlord,
-        defender_squad: Squad,
-        defender_warlord: Warlord,
+            self,
+            attacker_squad: Squad,
+            attacker_warlord: Warlord,
+            defender_squad: Squad,
+            defender_warlord: Warlord,
     ):
         self.attacker_squad = attacker_squad
         self.attacker_warlord = attacker_warlord
@@ -25,15 +26,16 @@ class CombatHandler:
     def execute_combat(self) -> tuple[Squad, Squad]:
         self._start_combat()
         while True:
-            if not self.attacker_squad:
-                self.attacker_warlord.remove_squad(self.attacker_squad)
-                return self._end_combat(self.attacker_warlord)
-            elif not self.defender_squad:
-                self.defender_warlord.remove_squad(self.defender_squad)
-                return self._end_combat(self.defender_warlord)
-            else:
+            try:
                 attacker, defender = self.pick_combatants()
                 self._execute_combat_round(attacker, defender)
+            except CombatUnitListEmpty:
+                if not self.attacker_squad:
+                    self.attacker_warlord.remove_squad(self.attacker_squad)
+                    return self._end_combat(self.attacker_warlord)
+                else:
+                    self.defender_warlord.remove_squad(self.defender_squad)
+                    return self._end_combat(self.defender_warlord)
 
     def _start_combat(self):
         pass
@@ -54,7 +56,7 @@ class CombatHandler:
     def _execute_attack(damager: Trooper, damagee: Trooper):
         damagee.current_hp = damagee.current_hp - damager.strength
         logging.debug(f"\n{str(damager)}\nATTACKED\n{str(damagee)}\n\n")
-        sleep(0.1)
+        sleep(0.2)
 
     def _execute_combat_round(self, attacking_unit: Trooper, defending_unit: Trooper):
         while True:
