@@ -1,12 +1,13 @@
-from Entities.Map.tile import Tile
-from Entities.Map.terrain import Plains, Forest
 from typing import Optional
+
+from Entities.Map.terrain import PLAINS, FOREST
+from Entities.Map.tile import Tile
 from Enums.exceptions import TileOutOfMapRange
+from settings import TILE_IMAGE_SIZE_PX
 
 
 class Map:
-    MAP_BORDER = 60
-    TILE_RADIUS_PX = 25
+    MAP_BORDER = 80
 
     def __init__(self, x_length, y_length, name="TestMap"):
         self.x_length = x_length
@@ -16,9 +17,9 @@ class Map:
         for x in range(self.x_length):
             for y in range(self.y_length):
                 if y < 7:
-                    self._tiles.append(Tile(x, y, Plains()))
+                    self._tiles.append(Tile(x, y, PLAINS))
                 else:
-                    self._tiles.append(Tile(x, y, Forest()))
+                    self._tiles.append(Tile(x, y, FOREST))
 
         self._tiles = tuple(self._tiles)
 
@@ -37,14 +38,14 @@ class Map:
             )
 
             return self.MAP_BORDER + (
-                found_tile.y_cor * self.TILE_RADIUS_PX * 2
-            ), self.MAP_BORDER + (found_tile.x_cor * self.TILE_RADIUS_PX * 2)
+                found_tile.y_cor * TILE_IMAGE_SIZE_PX
+            ), self.MAP_BORDER + (found_tile.x_cor * TILE_IMAGE_SIZE_PX)
         except StopIteration:
             raise TileOutOfMapRange
 
     def get_tile_py_px_click(self, click_y: int, click_x: int) -> Optional[Tile]:
-        clicked_x_cor = round((click_x - self.MAP_BORDER) / (2 * self.TILE_RADIUS_PX))
-        clicked_y_cor = round((click_y - self.MAP_BORDER) / (2 * self.TILE_RADIUS_PX))
+        clicked_x_cor = round((click_x - self.MAP_BORDER) / TILE_IMAGE_SIZE_PX)
+        clicked_y_cor = round((click_y - self.MAP_BORDER) / TILE_IMAGE_SIZE_PX)
 
         return self.get_tile_by_cors(clicked_x_cor, clicked_y_cor)
 

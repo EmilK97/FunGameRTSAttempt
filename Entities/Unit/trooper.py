@@ -17,8 +17,10 @@ class Trooper(ABC):
     id: int
     speed: int
     primary_skill: Skill
+    primary_skill_level: int = 1
     secondary_skill: Skill
-    graphic: str  # .PNG file path
+    secondary_skill_level: int = 0
+    sprite: str  # .PNG file path
 
     def __init__(self, strength: int, max_hp: int, race: Races, name: str):
         self.id = randint(1, 2**16)

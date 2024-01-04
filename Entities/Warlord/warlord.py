@@ -1,6 +1,6 @@
 import pygame
 
-from Engine.draw import add_border_to_image
+from Engine.process_image import add_border_to_image
 from Entities.Unit.squad import Squad
 from Enums.colors import BLACK
 from settings import SQUAD_ICON
