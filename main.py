@@ -4,14 +4,17 @@ from typing import Optional
 import pygame
 
 from Engine.combat import CombatHandler
-from Engine.draw import draw_map, draw_squads
+from Engine.draw import draw_map, draw_squads, draw_cities
+from Entities.City.city import City
 from Entities.Map.map import Map
 from Entities.Unit.empire_trooper import EmpireKnight
 from Entities.Unit.squad import Squad
 from Entities.Unit.undead_trooper import SkeletonRider, Skeleton
 from Entities.Warlord.warlord import Warlord
+from Enums.factions import Factions
+from Enums.races import Races
 from settings import RESOLUTION_X, RESOLUTION_Y, FSP_LIMIT
-from Enums.colors import RED
+from Enums.colors import RED, PURPLE
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -25,14 +28,37 @@ def is_squad_overlapping_with_any_of_squads(
 
 
 if __name__ == "__main__":
-    WarlordAttacker = Warlord("Attacker")
-    WarlordDefender = Warlord("Defender", color=RED)
     map = Map(9, 16)
+
+    WarlordAttacker = Warlord(
+        "Attacker",
+        color=PURPLE,
+        capital_city_name="AttackCapital#1",
+        favorite_faction=Factions.EMPIRE,
+        favorite_race=Races.ELF,
+        starting_tile=map.get_tile_by_cors(0, 0),
+    )
+    WarlordDefender = Warlord(
+        "Defender",
+        color=RED,
+        capital_city_name="DefCapital#1",
+        favorite_race=Races.UNDEAD,
+        favorite_faction=Factions.UNDEAD,
+        starting_tile=map.get_tile_by_cors(5, 10),
+    )
 
     WarlordAttacker.add_squad(
         Squad(
             Skeleton(),
             starting_tile=map.get_tile_by_cors(3, 8),
+        )
+    )
+    WarlordAttacker.gain_city(
+        City(
+            race=Races.ELF,
+            faction=Factions.EMPIRE,
+            name="Elf City #1",
+            tile_location=map.get_tile_by_cors(3, 9),
         )
     )
     WarlordAttacker.squads[0].append(Skeleton())
@@ -49,7 +75,7 @@ if __name__ == "__main__":
             EmpireKnight(),
             EmpireKnight(),
             EmpireKnight(),
-            starting_tile=map.get_tile_by_cors(0, 0),
+            starting_tile=map.get_tile_by_cors(0, 1),
         )
     )
 
@@ -98,11 +124,15 @@ if __name__ == "__main__":
                     for squad in WarlordAttacker.squads + WarlordDefender.squads:
                         if squad.tile_location == clicked_tile:
                             print(f"Squad info: {squad}")
+                    for city in WarlordAttacker.cities + WarlordDefender.cities:
+                        if city.tile_location == clicked_tile:
+                            print(f"City info: {city}")
 
             if event.type == pygame.KEYDOWN:
                 print(f"Chosen squad: {chosen_squad}")
 
         draw_squads(map, screen, WarlordAttacker.squads + WarlordDefender.squads)
+        draw_cities(map, screen, WarlordAttacker.cities + WarlordDefender.cities)
         FPS.tick(FSP_LIMIT)
         pygame.display.update()
 
