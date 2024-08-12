@@ -1,6 +1,5 @@
 import pygame
 
-from Entities.City.city import City
 from Entities.Map.map import Map
 from Entities.Unit.squad import Squad
 from Enums.colors import GREY

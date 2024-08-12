@@ -5,6 +5,8 @@ from Entities.Map.terrain import PLAINS, FOREST
 from Entities.Map.tile import Tile, TileCoordinates
 from Entities.Warlord.warlord import Warlord
 from Enums.exceptions import TileOutOfMapRange
+from Enums.factions import Factions
+from Enums.races import Races
 from settings import TILE_IMAGE_SIZE_PX
 
 
@@ -19,6 +21,7 @@ class Map:
         name="TestMap",
         for_amount_of_players: int = 2,
         players_starting_coordinates_in_order: tuple[..., TileCoordinates],
+        neutral_cities_coordinates: tuple[..., TileCoordinates],
     ):
         self.for_amount_of_players = for_amount_of_players
         self.x_length = x_length
@@ -44,6 +47,7 @@ class Map:
                     self._tiles.append(Tile(TileCoordinates(x, y), FOREST))
 
         self._tiles = tuple(self._tiles)
+        self.create_neutral_cities(neutral_cities_coordinates)
 
     def create_capital_cities(self, *warlords: Warlord):
         if len(warlords) != self.for_amount_of_players:
@@ -64,6 +68,24 @@ class Map:
             warlord.gain_city(warlord_capital_city)
 
         self.cities += self.capital_cities
+
+    def create_neutral_cities(
+        self,
+        neutral_cities_coordinates: tuple[..., TileCoordinates],
+        faction: Factions = Factions.EMPIRE,
+        race: Races = Races.ELF,
+    ):
+        for i, coordinates in enumerate(neutral_cities_coordinates):
+            self.cities.append(
+                City(
+                    race=race,
+                    faction=faction,
+                    name=f"{faction} #{i}",
+                    tile_location=self.get_tile_by_cors(
+                        coordinates.x_cor, coordinates.y_cor
+                    ),
+                )
+            )
 
     def get_tile_by_cors(self, x_cor: int, y_cor: int) -> Optional[Tile]:
         def has_cors(x, y, tile):

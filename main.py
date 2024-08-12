@@ -37,6 +37,10 @@ if __name__ == "__main__":
             TileCoordinates(5, 10),
             TileCoordinates(0, 0),
         ),
+        neutral_cities_coordinates=(
+            TileCoordinates(2, 2),
+            TileCoordinates(6, 8),
+        ),
     )
 
     WarlordAttacker = Warlord(
@@ -62,14 +66,6 @@ if __name__ == "__main__":
     )
     map.create_capital_cities(WarlordAttacker, WarlordDefender)
 
-    WarlordAttacker.gain_city(
-        City(
-            race=Races.ELF,
-            faction=Factions.EMPIRE,
-            name="Elf City #1",
-            tile_location=map.get_tile_by_cors(3, 9),
-        )
-    )
     WarlordAttacker.squads[0].append(Skeleton())
     WarlordAttacker.add_squad(
         Squad(
@@ -133,7 +129,7 @@ if __name__ == "__main__":
                     for squad in WarlordAttacker.squads + WarlordDefender.squads:
                         if squad.tile_location == clicked_tile:
                             print(f"Squad info: {squad}")
-                    for city in WarlordAttacker.cities + WarlordDefender.cities:
+                    for city in map.cities:
                         if city.tile_location == clicked_tile:
                             print(f"City info: {city}")
 
