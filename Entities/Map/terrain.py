@@ -3,7 +3,7 @@ import os
 import attrs
 import pygame
 
-from Engine.process_image import resize_image, add_border_to_image
+from Engine.graphics.process_image import resize_image, add_border_to_image
 from Enums.landscape import Landscape
 from settings import TERRAIN_SPRITES_PATH
 from settings import TILE_IMAGE_SIZE_PX
