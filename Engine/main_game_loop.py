@@ -111,7 +111,7 @@ def main_game_loop(
                 running = False
 
             if event.type == pygame.MOUSEBUTTONUP:
-                clicked_tile = game_map.get_tile_py_px_click(event.pos[0], event.pos[1])
+                clicked_tile = game_map.get_tile_by_px_click(event.pos[0], event.pos[1])
                 print(clicked_tile)
 
                 if event.button == 1:  # left click - ACTION

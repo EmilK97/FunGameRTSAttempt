@@ -105,7 +105,7 @@ class GameMap:
         except StopIteration:
             raise TileOutOfMapRange
 
-    def get_tile_py_px_click(self, click_y: int, click_x: int) -> Optional[Tile]:
+    def get_tile_by_px_click(self, click_y: int, click_x: int) -> Optional[Tile]:
         clicked_x_cor = round((click_x - self.MAP_BORDER) / TILE_IMAGE_SIZE_PX)
         clicked_y_cor = round((click_y - self.MAP_BORDER) / TILE_IMAGE_SIZE_PX)
 

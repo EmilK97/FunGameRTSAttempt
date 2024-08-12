@@ -1,6 +1,7 @@
 import pytest
 
 from Engine.main_game_loop import main_game_loop
+from Entities.Map.tile import Tile
 from Enums.exceptions import WrongNumberOfWarlordsForMap
 
 
@@ -47,3 +48,16 @@ def test_game_loop_too_many_warlords(basic_game_map, basic_warlord):
             basic_warlord,
             kill_after_one_loop=True,
         )
+
+
+def test_map_click_out_of_range(basic_game_map):
+    """Click px way out of range of basic map, expect None returned."""
+    clicked_tile = basic_game_map.get_tile_by_px_click(800, 800)
+    assert clicked_tile is None
+
+
+def test_map_click_on_tile(basic_game_map):
+    """Click px in range of basic map, expect returned tile in maps tiles."""
+    clicked_tile = basic_game_map.get_tile_by_px_click(200, 200)
+    assert isinstance(clicked_tile, Tile)
+    assert any([clicked_tile == tile for tile in basic_game_map])
