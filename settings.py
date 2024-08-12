@@ -11,5 +11,5 @@ TEMP_SPRITES_PATH = os.path.join(os.getcwd(), "Sprites", "Temp")
 SQUAD_ICON = os.path.join(TROOPER_SPRITES_PATH, "SquadIcon.png")
 CITY_ICON = os.path.join(TROOPER_SPRITES_PATH, "CityIcon.png")
 
-SQUAD_BORDER_SIZE = 4
+SQUAD_BORDER_SIZE = 3
 TILE_IMAGE_SIZE_PX = 50
