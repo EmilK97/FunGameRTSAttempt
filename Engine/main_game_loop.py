@@ -10,7 +10,7 @@ from Engine.graphics.draw import (
     highlight_chosen_squad,
 )
 from Entities.City.city import City
-from Entities.Map.map import Map
+from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
 from Entities.Unit.squad import Squad
 from Entities.Warlord.warlord import Warlord
@@ -79,7 +79,12 @@ def handle_squad_move_attempt(
         squad_to_move.move_to_tile(target_tile)
 
 
-def main_game_loop(game_map: Map, human_warlord: Warlord, ai_warlord: Warlord):
+def main_game_loop(
+    game_map: GameMap,
+    human_warlord: Warlord,
+    ai_warlord: Warlord,
+    kill_after_one_loop=False,
+):
     """For now assume single player, and human player is the first warlord from tuple."""
 
     pygame.init()
@@ -141,5 +146,9 @@ def main_game_loop(game_map: Map, human_warlord: Warlord, ai_warlord: Warlord):
 
         FPS.tick(FSP_LIMIT)
         pygame.display.update()
+
+        if kill_after_one_loop:
+            #  Only True for smoke test.
+            running = False
 
     pygame.quit()

@@ -8,3 +8,7 @@ class TileOutOfMapRange(Exception):
 
 class SquadSizeLimitReach(Exception):
     pass
+
+
+class WrongNumberOfWarlordsForMap(Exception):
+    pass

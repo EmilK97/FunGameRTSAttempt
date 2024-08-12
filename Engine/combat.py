@@ -17,7 +17,9 @@ class CombatHandler:
         attacker_warlord: Warlord,
         defender_squad: Squad,
         defender_warlord: Warlord,
+        delay_s: int = 0.2,
     ):
+        self.delay_s = delay_s
         self.attacker_squad = attacker_squad
         self.attacker_warlord = attacker_warlord
         self.defender_squad = defender_squad
@@ -54,11 +56,10 @@ class CombatHandler:
             raise CombatUnitListEmpty
         return self.attacker_squad[0], self.defender_squad[0]
 
-    @staticmethod
-    def _execute_attack(damager: Trooper, damagee: Trooper):
+    def _execute_attack(self, damager: Trooper, damagee: Trooper):
         damagee.current_hp = damagee.current_hp - damager.strength
         logging.debug(f"\n{str(damager)}\nATTACKED\n{str(damagee)}\n\n")
-        sleep(0.2)
+        sleep(self.delay_s)
 
     def _execute_combat_round(self, attacking_unit: Trooper, defending_unit: Trooper):
         while True:

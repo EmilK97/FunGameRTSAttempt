@@ -47,8 +47,9 @@ class Warlord:
     def cities(self) -> list[City]:
         return self._cities
 
-    def gain_city(self, city: City):
-        city.image = pygame.image.load(self._warlord_city_icon_path)
+    def gain_city(self, city: City, add_color_boundary_for_image=True):
+        if add_color_boundary_for_image:
+            city.image = pygame.image.load(self._warlord_city_icon_path)
         self._cities.append(city)
 
     def lose_city(self, city: City):

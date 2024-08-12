@@ -4,13 +4,13 @@ from Entities.City.city import CapitalCity, City
 from Entities.Map.terrain import PLAINS, FOREST
 from Entities.Map.tile import Tile, TileCoordinates
 from Entities.Warlord.warlord import Warlord
-from Enums.exceptions import TileOutOfMapRange
+from Enums.exceptions import TileOutOfMapRange, WrongNumberOfWarlordsForMap
 from Enums.factions import Factions
 from Enums.races import Races
 from settings import TILE_IMAGE_SIZE_PX
 
 
-class Map:
+class GameMap:
     MAP_BORDER = 80
 
     def __init__(
@@ -51,9 +51,7 @@ class Map:
 
     def create_capital_cities(self, *warlords: Warlord):
         if len(warlords) != self.for_amount_of_players:
-            raise RuntimeError(
-                f"Given warlords amount not equal to amount for players for which map is intended!"
-            )
+            raise WrongNumberOfWarlordsForMap
 
         for warlord, starting_location in zip(warlords, self.players_starting_location):
             warlord_capital_city = CapitalCity(

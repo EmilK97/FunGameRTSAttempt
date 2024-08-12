@@ -1,7 +1,7 @@
 import logging
 
 from Engine.main_game_loop import main_game_loop
-from Entities.Map.map import Map
+from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import TileCoordinates
 from Entities.Unit.empire_trooper import EmpireKnight
 from Entities.Unit.squad import Squad
@@ -14,7 +14,7 @@ from Enums.races import Races
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == "__main__":
-    game_map = Map(
+    game_map = GameMap(
         x_length=9,
         y_length=16,
         for_amount_of_players=2,
