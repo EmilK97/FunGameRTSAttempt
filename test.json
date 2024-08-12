@@ -10,7 +10,7 @@
         "Skills": [],
         "Image": ".PNG",
         "Tags": ["CAVALRY"],
-        "Name": "Empire Knight",
+        "Name": "Empire Knight"
     },
     "Swordsman": {
         "HP": 2,
@@ -23,6 +23,6 @@
         "Skills": [],
         "Image": ".PNG",
         "Tags": ["INFANTRY"],
-        "Name": "Swordsman",
-    },
+        "Name": "Swordsman"
+    }
 }
