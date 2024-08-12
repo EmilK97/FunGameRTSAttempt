@@ -7,6 +7,7 @@ from Engine.combat import CombatHandler
 from Engine.draw import draw_map, draw_squads, draw_cities
 from Entities.City.city import City
 from Entities.Map.map import Map
+from Entities.Map.tile import TileCoordinates
 from Entities.Unit.empire_trooper import EmpireKnight
 from Entities.Unit.squad import Squad
 from Entities.Unit.undead_trooper import SkeletonRider, Skeleton
@@ -28,7 +29,15 @@ def is_squad_overlapping_with_any_of_squads(
 
 
 if __name__ == "__main__":
-    map = Map(9, 16)
+    map = Map(
+        x_length=9,
+        y_length=16,
+        for_amount_of_players=2,
+        players_starting_coordinates_in_order=(
+            TileCoordinates(5, 10),
+            TileCoordinates(0, 0),
+        ),
+    )
 
     WarlordAttacker = Warlord(
         "Attacker",
@@ -36,7 +45,6 @@ if __name__ == "__main__":
         capital_city_name="AttackCapital#1",
         favorite_faction=Factions.EMPIRE,
         favorite_race=Races.ELF,
-        starting_tile=map.get_tile_by_cors(0, 0),
     )
     WarlordDefender = Warlord(
         "Defender",
@@ -44,7 +52,6 @@ if __name__ == "__main__":
         capital_city_name="DefCapital#1",
         favorite_race=Races.UNDEAD,
         favorite_faction=Factions.UNDEAD,
-        starting_tile=map.get_tile_by_cors(5, 10),
     )
 
     WarlordAttacker.add_squad(
@@ -53,6 +60,8 @@ if __name__ == "__main__":
             starting_tile=map.get_tile_by_cors(3, 8),
         )
     )
+    map.create_capital_cities(WarlordAttacker, WarlordDefender)
+
     WarlordAttacker.gain_city(
         City(
             race=Races.ELF,
@@ -132,7 +141,7 @@ if __name__ == "__main__":
                 print(f"Chosen squad: {chosen_squad}")
 
         draw_squads(map, screen, WarlordAttacker.squads + WarlordDefender.squads)
-        draw_cities(map, screen, WarlordAttacker.cities + WarlordDefender.cities)
+        draw_cities(map, screen)
         FPS.tick(FSP_LIMIT)
         pygame.display.update()
 

@@ -2,9 +2,6 @@ import logging
 from random import randint
 
 import pygame
-from pygame import Surface
-
-from Entities.Map.map import Map
 from Entities.Map.tile import Tile
 from Enums.factions import Factions
 from Enums.races import Races
@@ -58,11 +55,7 @@ class City(pygame.sprite.Sprite):
         logging.info(f"City {str(self)} was destroyed!!!\n")
         del self
 
-    def draw(self, surface: Surface, map: Map):
-        self.rect.center = map.get_tile_px_placement(self.tile_location)
-        surface.blit(self.image, self.rect)
-
 
 class CapitalCity(City):
     def __str__(self):
-        return f"Capital {super.__str__(self)}"
+        return f"Capital {super().__str__()}"

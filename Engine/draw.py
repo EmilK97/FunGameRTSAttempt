@@ -13,8 +13,12 @@ def draw_map(map: Map, surface: pygame.Surface):
 
 
 def draw_squads(map: Map, surface: pygame.Surface, squads: list[Squad]):
-    [squad.draw(surface, map) for squad in squads]
+    for squad in squads:
+        squad.rect.center = map.get_tile_px_placement(squad.tile_location)
+        surface.blit(squad.image, squad.rect)
 
 
-def draw_cities(map: Map, surface: pygame.Surface, cities: list[City]):
-    [city.draw(surface, map) for city in cities]
+def draw_cities(map: Map, surface: pygame.Surface):
+    for city in map.cities:
+        city.rect.center = map.get_tile_px_placement(city.tile_location)
+        surface.blit(city.image, city.rect)

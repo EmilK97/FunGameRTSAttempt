@@ -1,9 +1,6 @@
 import logging
 
 import pygame
-from pygame import Surface
-
-from Entities.Map.map import Map
 from Entities.Map.tile import Tile
 from Enums.exceptions import SquadSizeLimitReach
 from settings import SQUAD_ICON
@@ -17,10 +14,6 @@ class Squad(list, pygame.sprite.Sprite):
         self._tile_location = starting_tile
         self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()
-
-    def draw(self, surface: Surface, map: Map):
-        self.rect.center = map.get_tile_px_placement(self._tile_location)
-        surface.blit(self.image, self.rect)
 
     def move_to_tile(self, new_tile: Tile):
         if new_tile:
