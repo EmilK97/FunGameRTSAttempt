@@ -1,4 +1,6 @@
 from abc import ABC
+
+from Engine.random_values_generator.id_generator import get_random_id
 from Enums.races import Races
 from Enums.factions import Factions
 from random import randint
@@ -23,7 +25,7 @@ class Trooper(ABC):
     sprite: str  # .PNG file path
 
     def __init__(self, strength: int, max_hp: int, race: Races, name: str):
-        self.id = randint(1, 2**16)
+        self.id = get_random_id()
         self.name = name
         self.strength = strength
         self.race = race

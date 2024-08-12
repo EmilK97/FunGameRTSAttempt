@@ -2,6 +2,8 @@ import logging
 from random import randint
 
 import pygame
+
+from Engine.random_values_generator.id_generator import get_random_id
 from Entities.Map.tile import Tile
 from Entities.Unit.squad import Garrison
 from Entities.Unit.trooper import Trooper
@@ -31,7 +33,7 @@ class City(pygame.sprite.Sprite):
         image_path: str = CITY_ICON,
     ):
         super().__init__(*groups)
-        self.id = randint(1, 2**16)
+        self.id = get_random_id()
         self.name = name
         self.race = race
         self.faction = faction
