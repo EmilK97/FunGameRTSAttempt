@@ -3,7 +3,12 @@ from typing import Optional
 import pygame
 
 from Engine.combat import CombatHandler
-from Engine.graphics.draw import draw_map, draw_squads, draw_cities
+from Engine.graphics.draw import (
+    draw_map,
+    draw_squads,
+    draw_cities,
+    highlight_chosen_squad,
+)
 from Entities.Map.map import Map
 from Entities.Unit.squad import Squad
 from Entities.Warlord.warlord import Warlord
@@ -32,10 +37,14 @@ def main_game_loop(game_map: Map, human_warlord: Warlord, ai_warlord: Warlord):
         ai_squads = ai_warlord.squads
         all_squads = human_squads + ai_squads
 
+        # DRAW MAP
         draw_map(game_map, screen)
         draw_squads(game_map, screen, all_squads)
         draw_cities(game_map, screen)
+        if chosen_squad is not None:
+            highlight_chosen_squad(game_map, screen, chosen_squad)
 
+        # HANDLE USER CLICK EVENTS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
