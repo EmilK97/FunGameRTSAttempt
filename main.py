@@ -46,12 +46,12 @@ if __name__ == "__main__":
     WarlordAttacker.add_squad(
         Squad(
             Skeleton(),
+            Skeleton(),
             starting_tile=game_map.get_tile_by_cors(3, 8),
         )
     )
     game_map.create_capital_cities(WarlordAttacker, WarlordDefender)
 
-    WarlordAttacker.squads[0].append(Skeleton())
     WarlordAttacker.add_squad(
         Squad(
             Skeleton(),

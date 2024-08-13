@@ -52,12 +52,16 @@ def test_game_loop_too_many_warlords(basic_game_map, basic_warlord):
 
 def test_map_click_out_of_range(basic_game_map):
     """Click px way out of range of basic map, expect None returned."""
-    clicked_tile = basic_game_map.get_tile_by_px_click(800, 800)
+    clicked_tile = basic_game_map.get_tile_by_px_click(
+        basic_game_map.MAP_BORDER / 2, basic_game_map.MAP_BORDER / 2
+    )
     assert clicked_tile is None
 
 
 def test_map_click_on_tile(basic_game_map):
     """Click px in range of basic map, expect returned tile in maps tiles."""
-    clicked_tile = basic_game_map.get_tile_by_px_click(200, 200)
+    clicked_tile = basic_game_map.get_tile_by_px_click(
+        basic_game_map.MAP_BORDER, basic_game_map.MAP_BORDER
+    )
     assert isinstance(clicked_tile, Tile)
     assert any([clicked_tile == tile for tile in basic_game_map])
