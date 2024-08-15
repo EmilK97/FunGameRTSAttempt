@@ -85,6 +85,7 @@ def main_game_loop(
     human_warlord: Warlord,
     ai_warlord: Warlord,
     kill_after_one_loop=False,
+    clear_temp_dircetory_on_game_end = True
 ):
     """For now assume single player, and human player is the first warlord from tuple."""
 
@@ -152,7 +153,7 @@ def main_game_loop(
                         chosen_squad = None
 
                 if event.button == 3:  # right click - PRINT INFO
-                    for squad in all_squads:
+                    for squad in ai_squads + human_squads:
                         if squad.tile_location == clicked_tile:
                             print(f"Squad info: {squad}")
                     for city in game_map.cities:
@@ -169,5 +170,6 @@ def main_game_loop(
             #  Only True for smoke test.
             running = False
 
-    clear_temp_directory()
+    if clear_temp_dircetory_on_game_end:
+        clear_temp_directory()
     pygame.quit()

@@ -7,7 +7,11 @@ from Enums.exceptions import WrongNumberOfWarlordsForMap
 
 def test_smoke_run_map(basic_game_map, basic_warlord):
     main_game_loop(
-        basic_game_map, basic_warlord, basic_warlord, kill_after_one_loop=True
+        basic_game_map,
+        basic_warlord,
+        basic_warlord,
+        kill_after_one_loop=True,
+        clear_temp_dircetory_on_game_end=False,
     )
 
 
