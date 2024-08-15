@@ -53,7 +53,7 @@ def basic_game_map() -> GameMap:
 
 @pytest.fixture
 def zero_cors_tile(basic_game_map: GameMap) -> Tile:
-    basic_game_map.get_tile_by_cors(0, 0)
+    return basic_game_map.get_tile_by_cors(0, 0)
 
 
 @pytest.fixture
