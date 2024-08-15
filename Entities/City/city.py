@@ -1,5 +1,4 @@
 import logging
-from random import randint
 
 import pygame
 
@@ -7,6 +6,7 @@ from Engine.random_values_generator.id_generator import get_random_id
 from Entities.Map.tile import Tile
 from Entities.Unit.squad import Garrison
 from Entities.Unit.trooper import Trooper
+from Enums.city_tier import CityTier
 from Enums.factions import Factions
 from Enums.races import Races
 from settings import CITY_ICON
@@ -22,6 +22,8 @@ class City(pygame.sprite.Sprite):
     tile_location: Tile
     image_path: str
     _garrison: Garrison
+    tier: CityTier
+    combat_strength: int
 
     def __init__(
         self,
@@ -31,6 +33,7 @@ class City(pygame.sprite.Sprite):
         name: str,
         tile_location: Tile,
         image_path: str = CITY_ICON,
+        tier: CityTier,
     ):
         super().__init__(*groups)
         self.id = get_random_id()
@@ -38,7 +41,9 @@ class City(pygame.sprite.Sprite):
         self.race = race
         self.faction = faction
         self.tile_location = tile_location
-        self._max_hp = 20
+        self.tier = tier
+        self.combat_strength = 5 * int(tier)
+        self._max_hp = 10 * int(tier)
         self._current_hp = self._max_hp
         self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()
@@ -46,7 +51,7 @@ class City(pygame.sprite.Sprite):
         self._garrison = Garrison(starting_tile=self.tile_location)
 
     def __str__(self):
-        return f"City {self.name}, id: {self.id}, HP: {self.current_hp}/{self._max_hp}\n{str(self._garrison)}"
+        return f"City {self.name}, id: {self.id}, HP: {self.current_hp}/{self._max_hp}\n{str(self._garrison)}\nTier:{self.tier}"
 
     @property
     def current_hp(self) -> int:
@@ -83,7 +88,12 @@ class CapitalCity(City):
         self, *groups, race: Races, faction: Factions, name: str, tile_location: Tile
     ):
         super().__init__(
-            *groups, race=race, faction=faction, name=name, tile_location=tile_location
+            *groups,
+            race=race,
+            faction=faction,
+            name=name,
+            tile_location=tile_location,
+            tier=CityTier.CAPITAL_CITY,
         )
         self._max_hp = 30
         self._current_hp = self._max_hp

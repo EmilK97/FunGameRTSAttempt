@@ -1,12 +1,15 @@
 import logging
 
 from Engine.main_game_loop import main_game_loop
+from Entities.City.city import City
+from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import TileCoordinates
 from Entities.Unit.empire_trooper import EmpireKnight
-from Entities.Unit.squad import Squad
+from Entities.Unit.squad import Squad, Garrison
 from Entities.Unit.undead_trooper import SkeletonRider, Skeleton
 from Entities.Warlord.warlord import Warlord
+from Enums.city_tier import CityTier
 from Enums.colors import RED, PURPLE
 from Enums.factions import Factions
 from Enums.races import Races
@@ -22,9 +25,28 @@ if __name__ == "__main__":
             TileCoordinates(5, 10),
             TileCoordinates(0, 0),
         ),
-        neutral_cities_coordinates=(
-            TileCoordinates(2, 2),
-            TileCoordinates(6, 8),
+        neutral_cities_template=(
+            NeutralCityTemplate(
+                race=Races.UNDEAD,
+                faction=Factions.UNDEAD,
+                tile_coordinates=TileCoordinates(3, 3),
+                name="Weak skeleton city",
+                tier=CityTier.OUTPOST,
+                garrison=(Skeleton(), Skeleton()),
+            ),
+            NeutralCityTemplate(
+                race=Races.HUMAN,
+                faction=Factions.EMPIRE,
+                tile_coordinates=TileCoordinates(5, 5),
+                name="Strong Knight City",
+                tier=CityTier.FORTIFIED_CITY,
+                garrison=(
+                    EmpireKnight(),
+                    EmpireKnight(),
+                    EmpireKnight(),
+                    EmpireKnight(),
+                ),
+            ),
         ),
     )
 

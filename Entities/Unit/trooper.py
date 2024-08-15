@@ -1,12 +1,10 @@
+import logging
 from abc import ABC
 
 from Engine.random_values_generator.id_generator import get_random_id
-from Enums.races import Races
-from Enums.factions import Factions
-from random import randint
 from Entities.Skill.skill import Skill
-
-import logging
+from Enums.factions import Factions
+from Enums.races import Races
 
 
 class Trooper(ABC):
@@ -39,9 +37,8 @@ class Trooper(ABC):
     def current_hp(self) -> int:
         return self._current_hp
 
-    @current_hp.setter
-    def current_hp(self, new_value: int):
-        self._current_hp = new_value
+    def take_damage(self, damage: int):
+        self._current_hp += -1 * damage
         if self.current_hp < 1:
             self.die()
 

@@ -1,6 +1,7 @@
 import pytest
 
 from Entities.City.city import City
+from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
 from Entities.Map.gamemap import GameMap
 from Entities.Map.terrain import PLAINS, Terrain
 from Entities.Map.tile import TileCoordinates, Tile
@@ -8,6 +9,7 @@ from Entities.Unit.empire_trooper import EmpireKnight
 from Entities.Unit.squad import Squad
 from Entities.Unit.undead_trooper import Skeleton
 from Entities.Warlord.warlord import Warlord
+from Enums.city_tier import CityTier
 from Enums.factions import Factions
 from Enums.races import Races
 
@@ -23,9 +25,28 @@ def basic_game_map() -> GameMap:
             TileCoordinates(3, 3),
             TileCoordinates(0, 0),
         ),
-        neutral_cities_coordinates=(
-            TileCoordinates(1, 1),
-            TileCoordinates(2, 2),
+        neutral_cities_template=(
+            NeutralCityTemplate(
+                race=Races.UNDEAD,
+                faction=Factions.UNDEAD,
+                tile_coordinates=TileCoordinates(3, 3),
+                name="Weak skeleton city",
+                tier=CityTier.OUTPOST,
+                garrison=(Skeleton(), Skeleton()),
+            ),
+            NeutralCityTemplate(
+                race=Races.HUMAN,
+                faction=Factions.EMPIRE,
+                tile_coordinates=TileCoordinates(5, 5),
+                name="Strong Knight City",
+                tier=CityTier.FORTIFIED_CITY,
+                garrison=(
+                    EmpireKnight(),
+                    EmpireKnight(),
+                    EmpireKnight(),
+                    EmpireKnight(),
+                ),
+            ),
         ),
     )
 
@@ -81,13 +102,28 @@ def full_skeleton_squad(zero_cors_tile):
 
 
 @pytest.fixture
-def basic_city(zero_cors_tile):
-    City(
+def basic_city_empty_garrison(zero_cors_tile) -> City:
+    return City(
         race=Races.ELF,
         faction=Factions.EMPIRE,
         name="BasicCity",
         tile_location=zero_cors_tile,
+        tier=CityTier.CITY,
     )
+
+
+@pytest.fixture
+def city_outpost_with_garrison(zero_cors_tile, one_skeleton_squad) -> City:
+    """Weak city with single man garrison."""
+    city = City(
+        race=Races.ELF,
+        faction=Factions.EMPIRE,
+        name="BasicCity",
+        tile_location=zero_cors_tile,
+        tier=CityTier.OUTPOST,
+    )
+    city.add_troopers_to_garrison(one_skeleton_squad[0])
+    return city
 
 
 @pytest.fixture

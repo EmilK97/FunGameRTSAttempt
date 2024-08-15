@@ -1,9 +1,11 @@
 from typing import Optional
 
 from Entities.City.city import CapitalCity, City
+from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
 from Entities.Map.terrain import PLAINS, FOREST
 from Entities.Map.tile import Tile, TileCoordinates
 from Entities.Warlord.warlord import Warlord
+from Enums.city_tier import CityTier
 from Enums.exceptions import TileOutOfMapRange, WrongNumberOfWarlordsForMap
 from Enums.factions import Factions
 from Enums.races import Races
@@ -21,7 +23,7 @@ class GameMap:
         name="TestMap",
         for_amount_of_players: int = 2,
         players_starting_coordinates_in_order: tuple[..., TileCoordinates],
-        neutral_cities_coordinates: tuple[..., TileCoordinates],
+        neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
         self.for_amount_of_players = for_amount_of_players
         self.x_length = x_length
@@ -47,7 +49,7 @@ class GameMap:
                     self._tiles.append(Tile(TileCoordinates(x, y), FOREST))
 
         self._tiles = tuple(self._tiles)
-        self.create_neutral_cities(neutral_cities_coordinates)
+        self.create_neutral_cities(neutral_cities_template)
 
     def create_capital_cities(self, *warlords: Warlord):
         if len(warlords) != self.for_amount_of_players:
@@ -69,21 +71,20 @@ class GameMap:
 
     def create_neutral_cities(
         self,
-        neutral_cities_coordinates: tuple[..., TileCoordinates],
-        faction: Factions = Factions.EMPIRE,
-        race: Races = Races.ELF,
+        neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
-        for i, coordinates in enumerate(neutral_cities_coordinates):
-            self.cities.append(
-                City(
-                    race=race,
-                    faction=faction,
-                    name=f"{faction} #{i}",
-                    tile_location=self.get_tile_by_cors(
-                        coordinates.x_cor, coordinates.y_cor
-                    ),
-                )
+        for i, template in enumerate(neutral_cities_template):
+            new_city = City(
+                race=template.race,
+                faction=template.faction,
+                name=template.name,
+                tile_location=self.get_tile_by_cors(
+                    template.tile_coordinates.x_cor, template.tile_coordinates.y_cor
+                ),
+                tier=template.tier,
             )
+            new_city.add_troopers_to_garrison(*template.garrison)
+            self.cities.append(new_city)
 
     def get_tile_by_cors(self, x_cor: int, y_cor: int) -> Optional[Tile]:
         def has_cors(x, y, tile):

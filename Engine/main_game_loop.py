@@ -2,7 +2,7 @@ from typing import Optional
 
 import pygame
 
-from Engine.combat import CombatHandler
+from Engine.combat import FieldCombatHandler, CitySiegeHandler
 from Engine.graphics.draw import (
     draw_map,
     draw_squads,
@@ -49,7 +49,7 @@ def handle_squad_move_attempt(
     if defender_squad := is_tile_overlapping_with_any_of_squads(
         target_tile, inactive_warlord.squads
     ):
-        has_squad_to_move_won = CombatHandler(
+        has_squad_to_move_won = FieldCombatHandler(
             attacker_squad=squad_to_move,
             defender_squad=defender_squad,
             terrain=target_tile.terrain,
@@ -73,14 +73,32 @@ def handle_squad_move_attempt(
     ):
         # Check if collides with enemy city - should initiate siege.
         if colliding_city in inactive_warlord.cities:
-            print("ERROR - attacking enemy cities not implemented.")
+            has_squad_to_move_won = CitySiegeHandler(
+                attacker_squad=squad_to_move, defender_city=colliding_city
+            ).execute_city_siege()
+            if has_squad_to_move_won:
+                # If Squad won, warlords gain city, other warlord loses city.
+                # squad_to_move.move_to_tile(target_tile)
+                inactive_warlord.lose_city(colliding_city)
+                moving_squad_warlord.gain_city(colliding_city)
+            else:
+                # If squad to move lost, remove it from list.
+                moving_squad_warlord.remove_squad(squad_to_move)
 
         # Check if collides with player City - should add to garrison.
         elif colliding_city in moving_squad_warlord.cities:
             print("ERROR - adding to garrison not implemented!!")
         # Else is a neutral city
         else:
-            print("ERROR - attacking neutral cities not implemented.")
+            has_squad_to_move_won = CitySiegeHandler(
+                attacker_squad=squad_to_move, defender_city=colliding_city
+            ).execute_city_siege()
+            if has_squad_to_move_won:
+                # If Squad won, warlords gain city.
+                moving_squad_warlord.gain_city(colliding_city)
+            else:
+                # If squad to move lost, remove it from list.
+                moving_squad_warlord.remove_squad(squad_to_move)
 
     else:  # Tile is free, move squad
         squad_to_move.move_to_tile(target_tile)
