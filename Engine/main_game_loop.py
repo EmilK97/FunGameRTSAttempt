@@ -101,7 +101,22 @@ def main_game_loop(
         # DRAW MAP
         draw_map(game_map, screen)
         draw_squads(game_map, screen, all_squads)
-        draw_cities(game_map, screen)
+
+        # DRAW CITIES
+        cities_boundary_color = dict()
+        [
+            cities_boundary_color.update({city: human_warlord.color})
+            for city in human_warlord.cities
+        ]
+        [
+            cities_boundary_color.update({city: ai_warlord.color})
+            for city in ai_warlord.cities
+        ]
+        draw_cities(
+            game_map=game_map,
+            surface=screen,
+            cities_boundary_color=cities_boundary_color,
+        )
         if chosen_squad is not None:
             highlight_chosen_squad(game_map, screen, chosen_squad)
 

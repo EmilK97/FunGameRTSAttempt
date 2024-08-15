@@ -24,12 +24,9 @@ class Warlord:
         self.capital_city_name = capital_city_name
         self.favorite_race = favorite_race
         self.favorite_faction = favorite_faction
-        self.color = color
+        self.color: tuple[int] = color
         self._warlord_squad_icon_path = add_border_to_image(
             SQUAD_ICON, self.color, path_suffix=f"{str(self)}_squad_icon"
-        )
-        self._warlord_city_icon_path = add_border_to_image(
-            CITY_ICON, self.color, path_suffix=f"{str(self)}_city_icon"
         )
 
     @property
@@ -47,9 +44,7 @@ class Warlord:
     def cities(self) -> list[City]:
         return self._cities
 
-    def gain_city(self, city: City, add_color_boundary_for_image=True):
-        if add_color_boundary_for_image:
-            city.image = pygame.image.load(self._warlord_city_icon_path)
+    def gain_city(self, city: City):
         self._cities.append(city)
 
     def lose_city(self, city: City):

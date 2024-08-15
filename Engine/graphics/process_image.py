@@ -23,12 +23,15 @@ def resize_image(original_image_path: str, x_resize: int, y_resize: int) -> str:
 def add_border_to_image(
     image_path: str, rbg_color: tuple[int] = BLACK, path_suffix: str = ""
 ) -> str:
-    """Returns path to newly saved image"""
-    # new_path = os.path.join(TROOPER_SPRITES_PATH, f"_temp_{path_suffix}_{''.join(random.choices(string.ascii_uppercase + string.digits, k=8))}.png")
+    """Creates new image with border, if it does not exist already. Returns path to saved image."""
     new_path = os.path.join(
         TEMP_SPRITES_PATH,
         f"_temp_border_{os.path.split(image_path)[-1]}_{path_suffix}.png",
     )
+    # If image exists, do not replace it.
+    if os.path.exists(new_path):
+        return new_path
+
     img = Image.open(image_path)
     img_with_border = ImageOps.expand(img, border=SQUAD_BORDER_SIZE, fill=rbg_color)
     img_with_border.thumbnail(img.size, Image.Resampling.LANCZOS)
