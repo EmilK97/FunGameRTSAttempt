@@ -37,28 +37,34 @@ def is_tile_overlapping_with_any_of_cities(
 def handle_squad_move_attempt(
     target_tile: Tile,
     squad_to_move: Squad,
-    ai_warlord: Warlord,
-    human_warlord: Warlord,
+    moving_squad_warlord: Warlord,
+    inactive_warlord: Warlord,
     all_cities_on_map: list[City],
 ):
-    """Checks collision with other entites, if target tile already occupied.
-    Initialize combat if target tile occupied by enemy squad, initalizes siege if tile occupied by enemy city, joins
-    garrison if target tile is player city."""
+    """Checks collision with other entities, if target tile already occupied.
+    Initialize combat if target tile occupied by enemy [opposing warlord's] squad, initializes siege if tile occupied by
+    enemy [opposition's warlord] city, joins garrison if target tile is friendly city.
+    """
     # Check if collides with enemy squad - should initiate field combat.
     if defender_squad := is_tile_overlapping_with_any_of_squads(
-        target_tile, ai_warlord.squads
+        target_tile, inactive_warlord.squads
     ):
         has_squad_to_move_won = CombatHandler(
             attacker_squad=squad_to_move,
-            attacker_warlord=human_warlord,
             defender_squad=defender_squad,
-            defender_warlord=ai_warlord,
+            terrain=target_tile.terrain,
         ).execute_field_combat()
         if has_squad_to_move_won:
+            inactive_warlord.remove_squad(defender_squad)
             squad_to_move.move_to_tile(target_tile)
+        else:
+            # If squad to move lost, remove it from list.
+            moving_squad_warlord.remove_squad(squad_to_move)
 
     # Check if collides with player squad - should joins squad or fail if size toto big.
-    elif is_tile_overlapping_with_any_of_squads(target_tile, human_warlord.squads):
+    elif is_tile_overlapping_with_any_of_squads(
+        target_tile, moving_squad_warlord.squads
+    ):
         print("ERROR - merging squads not implemented!!")
 
     # Check if collides with any city:
@@ -66,11 +72,11 @@ def handle_squad_move_attempt(
         target_tile, all_cities_on_map
     ):
         # Check if collides with enemy city - should initiate siege.
-        if colliding_city in ai_warlord.cities:
+        if colliding_city in inactive_warlord.cities:
             print("ERROR - attacking enemy cities not implemented.")
 
         # Check if collides with player City - should add to garrison.
-        elif colliding_city in human_warlord.cities:
+        elif colliding_city in moving_squad_warlord.cities:
             print("ERROR - adding to garrison not implemented!!")
         # Else is a neutral city
         else:
@@ -85,7 +91,7 @@ def main_game_loop(
     human_warlord: Warlord,
     ai_warlord: Warlord,
     kill_after_one_loop=False,
-    clear_temp_dircetory_on_game_end = True
+    clear_temp_dircetory_on_game_end=True,
 ):
     """For now assume single player, and human player is the first warlord from tuple."""
 
@@ -145,8 +151,8 @@ def main_game_loop(
                     elif chosen_squad is not None:
                         handle_squad_move_attempt(
                             squad_to_move=chosen_squad,
-                            ai_warlord=ai_warlord,
-                            human_warlord=human_warlord,
+                            inactive_warlord=ai_warlord,
+                            moving_squad_warlord=human_warlord,
                             target_tile=clicked_tile,
                             all_cities_on_map=game_map.cities,
                         )

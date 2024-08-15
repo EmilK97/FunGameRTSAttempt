@@ -2,6 +2,7 @@ import pytest
 
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
+from Entities.Map.terrain import PLAINS, Terrain
 from Entities.Map.tile import TileCoordinates, Tile
 from Entities.Unit.empire_trooper import EmpireKnight
 from Entities.Unit.squad import Squad
@@ -87,3 +88,8 @@ def basic_city(zero_cors_tile):
         name="BasicCity",
         tile_location=zero_cors_tile,
     )
+
+
+@pytest.fixture
+def plains_terrain(zero_cors_tile) -> Terrain:
+    return PLAINS

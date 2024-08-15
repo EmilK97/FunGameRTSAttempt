@@ -1,9 +1,11 @@
 import logging
 from time import sleep
+from typing import Optional
 
+from Entities.City.city import City
+from Entities.Map.terrain import Terrain
 from Entities.Unit.squad import Squad
 from Entities.Unit.trooper import Trooper
-from Entities.Warlord.warlord import Warlord
 from Enums.exceptions import CombatUnitListEmpty
 
 
@@ -14,16 +16,16 @@ class CombatHandler:
     def __init__(
         self,
         attacker_squad: Squad,
-        attacker_warlord: Warlord,
         defender_squad: Squad,
-        defender_warlord: Warlord,
+        terrain: Terrain,
+        defender_city: Optional[City] = None,
         delay_s: int = 0.2,
     ):
         self.delay_s = delay_s
         self.attacker_squad = attacker_squad
-        self.attacker_warlord = attacker_warlord
         self.defender_squad = defender_squad
-        self.defender_warlord = defender_warlord
+        self.defender_city = defender_city
+        self.terrain = terrain
 
     def execute_field_combat(self) -> True:
         """Executes field combat turn sequence. Returns True if attacker has won else False."""
@@ -33,23 +35,25 @@ class CombatHandler:
                 attacker, defender = self.pick_combatants()
                 self._execute_combat_round(attacker, defender)
             except CombatUnitListEmpty:
-                if not self.attacker_squad:
-                    self.attacker_warlord.remove_squad(self.attacker_squad)
-                    return self._end_combat(losing_warlord=self.attacker_warlord)
-                else:
-                    self.defender_warlord.remove_squad(self.defender_squad)
-                    return self._end_combat(losing_warlord=self.defender_warlord)
+                return self._end_combat()
 
     def _start_combat(self):
-        pass
+        logging.info(
+            f"Combat initiated between squads: attacker {self.attacker_squad.id}, defender: {self.defender_squad.id}."
+        )
+        if self.defender_city is not None:
+            logging.info(f"Combat in City: {self.defender_city}")
+        else:
+            logging.info(f"Combat started in terrain: {self.terrain}")
 
-    def _end_combat(self, losing_warlord: Warlord) -> bool:
+    def _end_combat(self) -> bool:
         """Returns True if attacker has won else false."""
-        logging.info("Combat finished!")
-        logging.info(f"{str(losing_warlord)} lost!!!")
+        attacker_won = bool(self.attacker_squad)
+        logging.info(f"Attacker won: {attacker_won}!")
+        logging.info("Combat finished.")
         logging.info(f"DEFENDER {[str(unit) for unit in self.defender_squad]}")
         logging.info(f"ATTACKER {[str(unit) for unit in self.attacker_squad]}")
-        return losing_warlord == self.attacker_warlord
+        return attacker_won
 
     def pick_combatants(self) -> tuple[Trooper, Trooper]:
         if not self.attacker_squad or not self.defender_squad:
