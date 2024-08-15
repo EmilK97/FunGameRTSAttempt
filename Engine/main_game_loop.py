@@ -9,6 +9,7 @@ from Engine.graphics.draw import (
     draw_cities,
     highlight_chosen_squad,
 )
+from Engine.graphics.process_image import clear_temp_directory
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
@@ -94,16 +95,18 @@ def main_game_loop(
     chosen_squad: Optional[Squad] = None
 
     while running:
-        human_squads = human_warlord.squads
-        ai_squads = ai_warlord.squads
-        all_squads = human_squads + ai_squads
-
         # DRAW MAP
         draw_map(game_map, screen)
-        draw_squads(game_map, screen, all_squads)
+
+        # DRAW SQUADS
+        human_squads = human_warlord.squads
+        draw_squads(game_map, screen, human_squads, human_warlord.color)
+
+        ai_squads = ai_warlord.squads
+        draw_squads(game_map, screen, ai_squads, ai_warlord.color)
 
         # DRAW CITIES
-        cities_boundary_color = dict()
+        cities_boundary_color: dict[City, tuple[int]] = dict()
         [
             cities_boundary_color.update({city: human_warlord.color})
             for city in human_warlord.cities
@@ -166,4 +169,5 @@ def main_game_loop(
             #  Only True for smoke test.
             running = False
 
+    clear_temp_directory()
     pygame.quit()

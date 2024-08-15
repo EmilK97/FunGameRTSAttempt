@@ -1,12 +1,8 @@
-import pygame
-
-from Engine.graphics.process_image import add_border_to_image
 from Entities.City.city import City
 from Entities.Unit.squad import Squad
 from Enums.colors import BLACK
 from Enums.factions import Factions
 from Enums.races import Races
-from settings import SQUAD_ICON, CITY_ICON
 
 
 class Warlord:
@@ -25,16 +21,12 @@ class Warlord:
         self.favorite_race = favorite_race
         self.favorite_faction = favorite_faction
         self.color: tuple[int] = color
-        self._warlord_squad_icon_path = add_border_to_image(
-            SQUAD_ICON, self.color, path_suffix=f"{str(self)}_squad_icon"
-        )
 
     @property
     def squads(self) -> list[Squad]:
         return self._squads
 
     def add_squad(self, squad: Squad):
-        squad.image = pygame.image.load(self._warlord_squad_icon_path)
         self._squads.append(squad)
 
     def remove_squad(self, squad: Squad):

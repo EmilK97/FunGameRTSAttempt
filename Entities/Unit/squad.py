@@ -1,6 +1,8 @@
 import logging
 
 import pygame
+
+from Engine.random_values_generator.id_generator import get_random_id
 from Entities.Map.tile import Tile
 from Entities.Unit.trooper import Trooper
 from Enums.exceptions import SquadSizeLimitReach
@@ -14,6 +16,7 @@ class Squad(list, pygame.sprite.Sprite):
 
     def __init__(self, *args, starting_tile: Tile, image_path: str = SQUAD_ICON):
         super().__init__(args)
+        self.id = get_random_id()
         self._tile_location = starting_tile
         self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()

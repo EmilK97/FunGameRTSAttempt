@@ -1,4 +1,6 @@
+import os
 import os.path
+import shutil
 
 from PIL import Image, ImageOps
 
@@ -38,3 +40,16 @@ def add_border_to_image(
     img_with_border.save(new_path)
 
     return new_path
+
+
+def clear_temp_directory():
+    """Clear temp directory with .png icon images."""
+    for filename in os.listdir(TEMP_SPRITES_PATH):
+        file_path = os.path.join(TEMP_SPRITES_PATH, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print("Failed to delete %s. Reason: %s" % (file_path, e))

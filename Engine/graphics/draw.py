@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pygame
 
 from Engine.graphics.process_image import add_border_to_image
@@ -5,7 +7,7 @@ from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Unit.squad import Squad
 from Enums.colors import GREY, YELLOW
-from settings import TILE_IMAGE_SIZE_PX, CITY_ICON
+from settings import TILE_IMAGE_SIZE_PX, CITY_ICON, SQUAD_ICON
 
 
 def draw_map(game_map: GameMap, surface: pygame.Surface):
@@ -14,8 +16,24 @@ def draw_map(game_map: GameMap, surface: pygame.Surface):
         tile.draw(surface, game_map)
 
 
-def draw_squads(game_map: GameMap, surface: pygame.Surface, squads: list[Squad]):
+def draw_squads(
+    game_map: GameMap,
+    surface: pygame.Surface,
+    squads: list[Squad],
+    boundary_color: Optional[tuple[int]] = None,
+):
+    """Draws squads on a surface. squads_with_color indicates collection of squads to be drawn.
+    Optionally include boundary color RGB tuple, if given a squad image with appropriate icon will be added to drawn
+    instead."""
     for squad in squads:
+        if boundary_color:
+            squad.image = pygame.image.load(
+                add_border_to_image(
+                    SQUAD_ICON,
+                    boundary_color,
+                    path_suffix=f"{str(squad.id)}_squad_icon",
+                )
+            )
         squad.rect.center = game_map.get_tile_px_placement(squad.tile_location)
         surface.blit(squad.image, squad.rect)
 
