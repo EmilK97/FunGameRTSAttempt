@@ -1,12 +1,11 @@
 import logging
 
 from Engine.main_game_loop import main_game_loop
-from Entities.City.city import City
 from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import TileCoordinates
 from Entities.Unit.empire_trooper import EmpireKnight
-from Entities.Unit.squad import Squad, Garrison
+from Entities.Unit.squad import Squad
 from Entities.Unit.undead_trooper import SkeletonRider, Skeleton
 from Entities.Warlord.warlord import Warlord
 from Enums.city_tier import CityTier
@@ -18,11 +17,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == "__main__":
     game_map = GameMap(
-        x_length=9,
-        y_length=16,
+        x_length=16,
+        y_length=9,
         for_amount_of_players=2,
         players_starting_coordinates_in_order=(
-            TileCoordinates(5, 10),
+            TileCoordinates(8, 5),
             TileCoordinates(0, 0),
         ),
         neutral_cities_template=(
@@ -69,7 +68,7 @@ if __name__ == "__main__":
         Squad(
             Skeleton(),
             Skeleton(),
-            starting_tile=game_map.get_tile_by_cors(3, 8),
+            starting_tile=game_map.get_tile_by_cors(3, 6),
         )
     )
     game_map.create_capital_cities(WarlordAttacker, WarlordDefender)

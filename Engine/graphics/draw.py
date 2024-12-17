@@ -5,8 +5,9 @@ import pygame
 from Engine.graphics.process_image import add_border_to_image
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
+from Entities.Map.tile import Tile
 from Entities.Unit.squad import Squad
-from Enums.colors import GREY, YELLOW
+from Enums.colors import GREY, YELLOW, DARKER_YELLOW
 from settings import TILE_IMAGE_SIZE_PX, CITY_ICON, SQUAD_ICON
 
 
@@ -76,3 +77,32 @@ def highlight_chosen_squad(game_map: GameMap, surface: pygame.Surface, squad: Sq
         end_pos=[x_pos_center + px_tile_third_size, y_pos_center + px_tile_third_size],
         width=5,
     )
+
+
+def draw_path_line_between_tiles(
+    surface: pygame.Surface, game_map: GameMap, start_tile: Tile, next_tile: Tile
+):
+    x_pos_start, y_pos_start = game_map.get_tile_px_placement(start_tile)
+    x_pos_next, y_pos_next = game_map.get_tile_px_placement(next_tile)
+    pygame.draw.line(
+        surface=surface,
+        color=DARKER_YELLOW,
+        start_pos=[x_pos_start, y_pos_start],
+        end_pos=[x_pos_next, y_pos_next],
+        width=8,
+    )
+
+
+def draw_path_highlight(
+    surface: pygame.Surface,
+    game_map: GameMap,
+    starting_tile: Tile,
+    path: tuple[Tile, ...],
+):
+    if len(path) == 0:
+        return
+    # Draw first line between starting tile and first in path
+    draw_path_line_between_tiles(surface, game_map, starting_tile, next_tile=path[0])
+    # Draw remaining lines for tiles in path
+    for previous_tile, next_tile in zip(path[0:-1], path[1:]):
+        draw_path_line_between_tiles(surface, game_map, previous_tile, next_tile)

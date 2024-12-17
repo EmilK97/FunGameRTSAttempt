@@ -11,7 +11,7 @@ def test_smoke_run_map(basic_game_map, basic_warlord):
         basic_warlord,
         basic_warlord,
         kill_after_one_loop=True,
-        clear_temp_dircetory_on_game_end=False,
+        clear_temp_directory_on_game_end=False,
     )
 
 

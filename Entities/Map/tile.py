@@ -28,6 +28,9 @@ class Tile(pygame.sprite.Sprite):
     def __str__(self):
         return f"{str(self.terrain)}: {self.x_cor}x{self.y_cor}"
 
+    def __repr__(self):
+        return self.__str__()
+
     def draw(self, surface: pygame.Surface, map):
         self.rect.center = map.get_tile_px_placement(self)
         surface.blit(self.image, self.rect)
