@@ -3,6 +3,7 @@ from typing import Optional
 import pygame
 
 from Engine.graphics.process_image import add_border_to_image
+from Engine.movement.pathing import find_last_path_index_speed_allows_to_reach
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
@@ -80,13 +81,17 @@ def highlight_chosen_squad(game_map: GameMap, surface: pygame.Surface, squad: Sq
 
 
 def draw_path_line_between_tiles(
-    surface: pygame.Surface, game_map: GameMap, start_tile: Tile, next_tile: Tile
+    surface: pygame.Surface,
+    game_map: GameMap,
+    start_tile: Tile,
+    next_tile: Tile,
+    color: tuple[int, int, int],
 ):
     x_pos_start, y_pos_start = game_map.get_tile_px_placement(start_tile)
     x_pos_next, y_pos_next = game_map.get_tile_px_placement(next_tile)
     pygame.draw.line(
         surface=surface,
-        color=DARKER_YELLOW,
+        color=color,
         start_pos=[x_pos_start, y_pos_start],
         end_pos=[x_pos_next, y_pos_next],
         width=8,
@@ -98,11 +103,27 @@ def draw_path_highlight(
     game_map: GameMap,
     starting_tile: Tile,
     path: tuple[Tile, ...],
+    highlighted_squad_speed: int,
 ):
     if len(path) == 0:
         return
-    # Draw first line between starting tile and first in path
-    draw_path_line_between_tiles(surface, game_map, starting_tile, next_tile=path[0])
+
+    max_tile_range_index = find_last_path_index_speed_allows_to_reach(
+        highlighted_squad_speed, path
+    )
+    if max_tile_range_index is None:
+        max_tile_range_index = 0
+
     # Draw remaining lines for tiles in path
-    for previous_tile, next_tile in zip(path[0:-1], path[1:]):
-        draw_path_line_between_tiles(surface, game_map, previous_tile, next_tile)
+    draw_path_line_between_tiles(
+        surface,
+        game_map,
+        starting_tile,
+        next_tile=path[0],
+        color=DARKER_YELLOW if max_tile_range_index > 0 else GREY,
+    )
+    for tile_index in range(len(path) - 1):
+        color = DARKER_YELLOW if tile_index < max_tile_range_index else GREY
+        draw_path_line_between_tiles(
+            surface, game_map, path[tile_index], path[tile_index + 1], color=color
+        )

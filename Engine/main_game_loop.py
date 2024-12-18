@@ -11,7 +11,10 @@ from Engine.graphics.draw import (
 )
 from Engine.graphics.process_image import clear_temp_directory
 from Engine.movement.movement import handle_squad_move_attempt
-from Engine.movement.pathing import find_movement_path
+from Engine.movement.pathing import (
+    find_movement_path,
+    find_last_path_index_speed_allows_to_reach,
+)
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
@@ -62,15 +65,17 @@ def main_game_loop(
             surface=screen,
             cities_boundary_color=cities_boundary_color,
         )
+
         if HIGHLIGHTED_SQUAD is not None:
             highlight_chosen_squad(game_map, screen, HIGHLIGHTED_SQUAD)
-        if HIGHLIGHTED_PATH is not None:
-            draw_path_highlight(
-                surface=screen,
-                game_map=game_map,
-                starting_tile=HIGHLIGHTED_SQUAD.tile_location,
-                path=HIGHLIGHTED_PATH,
-            )
+            if HIGHLIGHTED_PATH is not None:
+                draw_path_highlight(
+                    surface=screen,
+                    game_map=game_map,
+                    starting_tile=HIGHLIGHTED_SQUAD.tile_location,
+                    path=HIGHLIGHTED_PATH,
+                    highlighted_squad_speed=HIGHLIGHTED_SQUAD.speed,
+                )
 
         # HANDLE USER CLICK EVENTS
         for event in pygame.event.get():
@@ -90,7 +95,7 @@ def main_game_loop(
                             HIGHLIGHTED_SQUAD = None
                             HIGHLIGHTED_PATH = None
                     elif HIGHLIGHTED_SQUAD is not None and HIGHLIGHTED_PATH is None:
-                        HIGHLIGHTED_PATH, movement_cost = find_movement_path(
+                        HIGHLIGHTED_PATH = find_movement_path(
                             starting_tile=HIGHLIGHTED_SQUAD.tile_location,
                             target_tile=clicked_tile,
                             game_map=game_map,
@@ -98,7 +103,7 @@ def main_game_loop(
                         break
 
                     elif HIGHLIGHTED_SQUAD is not None and HIGHLIGHTED_PATH is not None:
-                        movement_path, _ = find_movement_path(
+                        movement_path = find_movement_path(
                             starting_tile=HIGHLIGHTED_SQUAD.tile_location,
                             target_tile=clicked_tile,
                             game_map=game_map,
@@ -109,7 +114,7 @@ def main_game_loop(
                                 squad_to_move=HIGHLIGHTED_SQUAD,
                                 inactive_warlord=ai_warlord,
                                 moving_squad_warlord=human_warlord,
-                                target_tile=clicked_tile,
+                                path=HIGHLIGHTED_PATH,
                                 game_map=game_map,
                             )
                             HIGHLIGHTED_SQUAD = None

@@ -1,6 +1,10 @@
 from typing import Optional
 
 from Engine.combat import FieldCombatHandler, CitySiegeHandler
+from Engine.movement.pathing import (
+    find_last_path_index_speed_allows_to_reach,
+    get_total_movement_cost_for_tiles,
+)
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
@@ -25,7 +29,7 @@ def is_tile_overlapping_with_any_of_cities(
 
 
 def handle_squad_move_attempt(
-    target_tile: Tile,
+    path: tuple[Tile, ...],
     squad_to_move: Squad,
     moving_squad_warlord: Warlord,
     inactive_warlord: Warlord,
@@ -35,6 +39,15 @@ def handle_squad_move_attempt(
     Initialize combat if target tile occupied by enemy [opposing warlord's] squad, initializes siege if tile occupied by
     enemy [opposition's warlord] city, joins garrison if target tile is friendly city.
     """
+    path_index = find_last_path_index_speed_allows_to_reach(squad_to_move.speed, path)
+    if path_index is None:
+        return
+    target_tile = path[path_index]
+    # Decrease squad speed
+    squad_to_move.decrease_squad_speed(
+        get_total_movement_cost_for_tiles(path[: path_index + 1])
+    )
+
     # Check if collides with enemy squad - should initiate field combat.
     if defender_squad := is_tile_overlapping_with_any_of_squads(
         target_tile, inactive_warlord.squads

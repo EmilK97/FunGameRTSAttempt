@@ -13,14 +13,14 @@ class GameMap:
     MAP_BORDER = 80
 
     def __init__(
-            self,
-            *,
-            x_length,
-            y_length,
-            name="TestMap",
-            for_amount_of_players: int = 2,
-            players_starting_coordinates_in_order: tuple[..., TileCoordinates],
-            neutral_cities_template: tuple[NeutralCityTemplate, ...],
+        self,
+        *,
+        x_length,
+        y_length,
+        name="TestMap",
+        for_amount_of_players: int = 2,
+        players_starting_coordinates_in_order: tuple[..., TileCoordinates],
+        neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
         self.for_amount_of_players = for_amount_of_players
         self.x_length = x_length
@@ -41,7 +41,18 @@ class GameMap:
         for x in range(self.x_length):
             mountain_coordinates = ((7, 2), (8, 3), (9, 4), (5, 3), (4, 3))
             forest_coordinates = (
-            (7, 3), (8, 4), (9, 5), (2, 3), (2, 2), (1, 1), (1, 2), (3, 3), (5, 3), (4, 4), (5, 4))
+                (7, 3),
+                (8, 4),
+                (9, 5),
+                (2, 3),
+                (2, 2),
+                (1, 1),
+                (1, 2),
+                (3, 3),
+                (5, 3),
+                (4, 4),
+                (5, 4),
+            )
             for y in range(self.y_length):
                 if (x, y) in mountain_coordinates:
                     self._tiles.append(Tile(TileCoordinates(x, y), MOUNTAIN))
@@ -76,8 +87,8 @@ class GameMap:
         self.cities += self.capital_cities
 
     def create_neutral_cities(
-            self,
-            neutral_cities_template: tuple[NeutralCityTemplate, ...],
+        self,
+        neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
         for i, template in enumerate(neutral_cities_template):
             new_city = City(
@@ -107,7 +118,7 @@ class GameMap:
             )
 
             return self.MAP_BORDER + (
-                    found_tile.x_cor * TILE_IMAGE_SIZE_PX
+                found_tile.x_cor * TILE_IMAGE_SIZE_PX
             ), self.MAP_BORDER + (found_tile.y_cor * TILE_IMAGE_SIZE_PX)
         except StopIteration:
             raise TileOutOfMapRange

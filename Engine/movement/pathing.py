@@ -1,3 +1,5 @@
+from typing import Optional
+
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
 
@@ -7,9 +9,25 @@ def get_total_movement_cost_for_tiles(tiles: tuple[Tile, ...]) -> int:
     return sum([tile.terrain.movement_cost for tile in tiles])
 
 
+def find_last_path_index_speed_allows_to_reach(
+    speed: int, path: tuple[Tile, ...]
+) -> Optional[int]:
+    """Returns tile index from given path which given speed can reach. None means not enough movement to move."""
+    max_tile_range_index = None
+    if len(path) == 1 and speed >= get_total_movement_cost_for_tiles(path):
+        max_tile_range_index = 0
+
+    for i in range(1, len(path)):
+        path_movement_cost = get_total_movement_cost_for_tiles(path[:-i])
+        if speed > path_movement_cost:
+            max_tile_range_index = len(path) - i
+            break
+    return max_tile_range_index
+
+
 def find_movement_path(
     starting_tile: Tile, target_tile: Tile, game_map: GameMap
-) -> [tuple[Tile, ...], int]:
+) -> tuple[Tile, ...]:
     """Returns set of tile in order and total movement cost.
     Assumptions: can't move sideways (only East/ North/ Sout / West squares)."""
     current_placement_cor_x = starting_tile.tile_coordinates.x_cor
@@ -77,4 +95,4 @@ def find_movement_path(
         y_cor_diff = target_tile.tile_coordinates.y_cor - current_placement_cor_y
 
     tile_path_order = tuple(tile_path_order)
-    return tile_path_order, get_total_movement_cost_for_tiles(tile_path_order)
+    return tile_path_order

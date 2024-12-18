@@ -32,7 +32,7 @@ class Squad(list, pygame.sprite.Sprite):
         return self._tile_location
 
     def __str__(self):
-        return f"Location: {self._tile_location}, units: {[str(_) for _ in self]}"
+        return f"Location: {self._tile_location}, Speed: {self.speed}, units: {[str(_) for _ in self]}"
 
     def append(self, __object: Trooper):
         if len(self) >= self.SIZE_LIMIT:
@@ -44,6 +44,15 @@ class Squad(list, pygame.sprite.Sprite):
             raise SquadSizeLimitReach
         super().extend(troopers)
 
+    @property
+    def speed(self) -> int:
+        """Squad speed is the lowest number of all members."""
+        return min([trooper.speed for trooper in self])
+
+    def decrease_squad_speed(self, speed_decrease: int):
+        for trooper in self:
+            trooper.decrease_speed(speed_decrease)
+
 
 class Garrison(Squad):
     """Can be stationed only in City."""
@@ -52,3 +61,8 @@ class Garrison(Squad):
 
     def __str__(self):
         return f"Garrison: {[str(_) for _ in self]}"
+
+    @property
+    def speed(self) -> int:
+        """Garrison can never move."""
+        return 0
