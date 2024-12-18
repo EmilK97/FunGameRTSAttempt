@@ -5,10 +5,7 @@ from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
 from Entities.Map.terrain import PLAINS, FOREST
 from Entities.Map.tile import Tile, TileCoordinates
 from Entities.Warlord.warlord import Warlord
-from Enums.city_tier import CityTier
 from Enums.exceptions import TileOutOfMapRange, WrongNumberOfWarlordsForMap
-from Enums.factions import Factions
-from Enums.races import Races
 from settings import TILE_IMAGE_SIZE_PX
 
 
@@ -16,14 +13,14 @@ class GameMap:
     MAP_BORDER = 80
 
     def __init__(
-        self,
-        *,
-        x_length,
-        y_length,
-        name="TestMap",
-        for_amount_of_players: int = 2,
-        players_starting_coordinates_in_order: tuple[..., TileCoordinates],
-        neutral_cities_template: tuple[NeutralCityTemplate, ...],
+            self,
+            *,
+            x_length,
+            y_length,
+            name="TestMap",
+            for_amount_of_players: int = 2,
+            players_starting_coordinates_in_order: tuple[..., TileCoordinates],
+            neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
         self.for_amount_of_players = for_amount_of_players
         self.x_length = x_length
@@ -70,8 +67,8 @@ class GameMap:
         self.cities += self.capital_cities
 
     def create_neutral_cities(
-        self,
-        neutral_cities_template: tuple[NeutralCityTemplate, ...],
+            self,
+            neutral_cities_template: tuple[NeutralCityTemplate, ...],
     ):
         for i, template in enumerate(neutral_cities_template):
             new_city = City(
@@ -101,7 +98,7 @@ class GameMap:
             )
 
             return self.MAP_BORDER + (
-                found_tile.x_cor * TILE_IMAGE_SIZE_PX
+                    found_tile.x_cor * TILE_IMAGE_SIZE_PX
             ), self.MAP_BORDER + (found_tile.y_cor * TILE_IMAGE_SIZE_PX)
         except StopIteration:
             raise TileOutOfMapRange
@@ -120,6 +117,3 @@ class GameMap:
 
     def __str__(self):
         return f"{self.name}: {self.x_length}x{self.y_length}"
-
-    def find_route_to_tile(self, start_tile: Tile, target_tile: Tile):
-        pass

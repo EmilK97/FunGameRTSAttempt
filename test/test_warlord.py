@@ -1,10 +1,12 @@
 def test_warlord_add_squad(one_skeleton_squad, basic_warlord):
     basic_warlord.add_squad(one_skeleton_squad)
+    assert one_skeleton_squad in basic_warlord.squads
 
 
 def test_warlord_remove_squad(one_skeleton_squad, basic_warlord):
     basic_warlord.add_squad(one_skeleton_squad)
     basic_warlord.remove_squad(one_skeleton_squad)
+    assert one_skeleton_squad not in basic_warlord.squads
 
 
 def test_warlord_gain_city(basic_city_empty_garrison, basic_warlord):

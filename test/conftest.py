@@ -18,8 +18,8 @@ from Enums.races import Races
 def basic_game_map() -> GameMap:
     """With two neutral cities."""
     return GameMap(
-        x_length=9,
-        y_length=16,
+        x_length=16,
+        y_length=9,
         for_amount_of_players=2,
         players_starting_coordinates_in_order=(
             TileCoordinates(3, 3),
