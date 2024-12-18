@@ -33,8 +33,8 @@ def main_game_loop(
     FPS = pygame.time.Clock()
     screen = pygame.display.set_mode([RESOLUTION_Y, RESOLUTION_X])
     running = True
-    chosen_squad: Optional[Squad] = None
-    chosen_path: Optional[tuple[Tile, ...]] = None
+    HIGHLIGHTED_SQUAD: Optional[Squad] = None
+    HIGHLIGHTED_PATH: Optional[tuple[Tile, ...]] = None
 
     while running:
         # DRAW MAP
@@ -62,14 +62,14 @@ def main_game_loop(
             surface=screen,
             cities_boundary_color=cities_boundary_color,
         )
-        if chosen_squad is not None:
-            highlight_chosen_squad(game_map, screen, chosen_squad)
-        if chosen_path is not None:
+        if HIGHLIGHTED_SQUAD is not None:
+            highlight_chosen_squad(game_map, screen, HIGHLIGHTED_SQUAD)
+        if HIGHLIGHTED_PATH is not None:
             draw_path_highlight(
                 surface=screen,
                 game_map=game_map,
-                starting_tile=chosen_squad.tile_location,
-                path=chosen_path,
+                starting_tile=HIGHLIGHTED_SQUAD.tile_location,
+                path=HIGHLIGHTED_PATH,
             )
 
         # HANDLE USER CLICK EVENTS
@@ -79,47 +79,50 @@ def main_game_loop(
 
             if event.type == pygame.MOUSEBUTTONUP:
                 clicked_tile = game_map.get_tile_by_px_click(event.pos[0], event.pos[1])
-                print(clicked_tile)
 
                 if event.button == 1:  # left click - ACTION
-                    if chosen_squad is None:
+                    if HIGHLIGHTED_SQUAD is None:
                         for squad in human_squads:
                             if squad.tile_location == clicked_tile:
-                                chosen_squad = squad
+                                HIGHLIGHTED_SQUAD = squad
                                 break
                         else:
-                            chosen_squad = None
-                            chosen_path = None
-                    elif chosen_squad is not None and chosen_path is None:
-                        chosen_path, movement_cost = find_movement_path(
-                            starting_tile=chosen_squad.tile_location,
+                            HIGHLIGHTED_SQUAD = None
+                            HIGHLIGHTED_PATH = None
+                    elif HIGHLIGHTED_SQUAD is not None and HIGHLIGHTED_PATH is None:
+                        HIGHLIGHTED_PATH, movement_cost = find_movement_path(
+                            starting_tile=HIGHLIGHTED_SQUAD.tile_location,
                             target_tile=clicked_tile,
                             game_map=game_map,
                         )
                         break
 
-                    elif chosen_squad is not None and chosen_path is not None:
+                    elif HIGHLIGHTED_SQUAD is not None and HIGHLIGHTED_PATH is not None:
                         movement_path, _ = find_movement_path(
-                            starting_tile=chosen_squad.tile_location,
+                            starting_tile=HIGHLIGHTED_SQUAD.tile_location,
                             target_tile=clicked_tile,
                             game_map=game_map,
                         )
-                        if movement_path == chosen_path:
+                        if movement_path == HIGHLIGHTED_PATH:
                             # Player confirms by double-clicking target file with drawn path.
                             handle_squad_move_attempt(
-                                squad_to_move=chosen_squad,
+                                squad_to_move=HIGHLIGHTED_SQUAD,
                                 inactive_warlord=ai_warlord,
                                 moving_squad_warlord=human_warlord,
                                 target_tile=clicked_tile,
                                 game_map=game_map,
                             )
-                            chosen_squad = None
-                            chosen_path = None
+                            HIGHLIGHTED_SQUAD = None
+                            HIGHLIGHTED_PATH = None
                         else:
                             # Player chose new path - re-draw.
-                            chosen_path = movement_path
+                            HIGHLIGHTED_PATH = movement_path
 
-                if event.button == 3:  # right click - PRINT INFO
+                if event.button == 3:  # right click
+                    # Cancel highlighted squad and path.
+                    HIGHLIGHTED_PATH = None
+                    HIGHLIGHTED_SQUAD = None
+                    # PRINT INFO of clicked field.
                     for squad in ai_squads + human_squads:
                         if squad.tile_location == clicked_tile:
                             print(f"Squad info: {squad}")
@@ -127,8 +130,10 @@ def main_game_loop(
                         if city.tile_location == clicked_tile:
                             print(f"City info: {city}")
 
+                    print(clicked_tile)
+
             if event.type == pygame.KEYDOWN:
-                print(f"Chosen squad: {chosen_squad}")
+                print(f"Chosen squad: {HIGHLIGHTED_SQUAD}")
 
         FPS.tick(FSP_LIMIT)
         pygame.display.update()
