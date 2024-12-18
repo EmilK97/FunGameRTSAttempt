@@ -2,6 +2,7 @@ from typing import Optional
 
 import pygame
 
+from Engine.graphics.button import Button
 from Engine.graphics.process_image import add_border_to_image
 from Engine.movement.pathing import find_last_path_index_speed_allows_to_reach
 from Entities.City.city import City
@@ -111,6 +112,9 @@ def draw_path_highlight(
     max_tile_range_index = find_last_path_index_speed_allows_to_reach(
         highlighted_squad_speed, path
     )
+    if len(path) == 1 and max_tile_range_index is not None:
+        max_tile_range_index = 1
+
     if max_tile_range_index is None:
         max_tile_range_index = 0
 
@@ -127,3 +131,20 @@ def draw_path_highlight(
         draw_path_line_between_tiles(
             surface, game_map, path[tile_index], path[tile_index + 1], color=color
         )
+
+
+def draw_buttons(
+    surface: pygame.Surface,
+    mouse_position: tuple[int, int],
+    buttons: tuple[Button, ...],
+):
+    for button in buttons:
+        # Button hover effect
+        if button.rect.collidepoint(mouse_position):
+            pygame.draw.rect(surface, button.hover_color, button.rect)
+        else:
+            pygame.draw.rect(surface, button.button_color, button.rect)
+
+        # Draw button text
+        text_rect = button.button_text.get_rect(center=button.rect.center)
+        surface.blit(button.button_text, text_rect)

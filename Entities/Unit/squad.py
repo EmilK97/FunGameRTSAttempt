@@ -53,6 +53,10 @@ class Squad(list, pygame.sprite.Sprite):
         for trooper in self:
             trooper.decrease_speed(speed_decrease)
 
+    def reset_speed(self):
+        for trooper in self:
+            trooper.reset_speed()
+
 
 class Garrison(Squad):
     """Can be stationed only in City."""

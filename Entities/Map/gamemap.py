@@ -10,7 +10,7 @@ from settings import TILE_IMAGE_SIZE_PX
 
 
 class GameMap:
-    MAP_BORDER = 80
+    MAP_BORDER = 40
 
     def __init__(
         self,

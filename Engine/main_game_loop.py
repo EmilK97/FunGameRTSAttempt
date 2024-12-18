@@ -2,24 +2,27 @@ from typing import Optional
 
 import pygame
 
+from Engine.graphics.button import Button
 from Engine.graphics.draw import (
     draw_map,
     draw_squads,
     draw_cities,
     highlight_chosen_squad,
     draw_path_highlight,
+    draw_buttons,
 )
 from Engine.graphics.process_image import clear_temp_directory
 from Engine.movement.movement import handle_squad_move_attempt
 from Engine.movement.pathing import (
     find_movement_path,
-    find_last_path_index_speed_allows_to_reach,
 )
+from Engine.turn.turn_handlers import end_turn
 from Entities.City.city import City
 from Entities.Map.gamemap import GameMap
 from Entities.Map.tile import Tile
 from Entities.Unit.squad import Squad
 from Entities.Warlord.warlord import Warlord
+from Enums.colors import BLACK, DARK_RED, WHITE
 from settings import RESOLUTION_X, RESOLUTION_Y, FSP_LIMIT
 
 
@@ -31,13 +34,34 @@ def main_game_loop(
     clear_temp_directory_on_game_end=True,
 ):
     """For now assume single player, and human player is the first warlord from tuple."""
-
     pygame.init()
+    pygame.font.init()
     FPS = pygame.time.Clock()
     screen = pygame.display.set_mode([RESOLUTION_Y, RESOLUTION_X])
     running = True
     HIGHLIGHTED_SQUAD: Optional[Squad] = None
     HIGHLIGHTED_PATH: Optional[tuple[Tile, ...]] = None
+
+    END_TURN_BUTTON = Button(
+        name="End turn",
+        x=980,
+        y=20,
+        button_color=WHITE,
+        hover_color=DARK_RED,
+        text="End Turn!",
+        text_color=BLACK,
+    )
+    POINTLESS_BUTTON = Button(
+        name="???",
+        x=980,
+        y=80,
+        button_color=WHITE,
+        hover_color=DARK_RED,
+        text="????",
+        text_color=BLACK,
+    )
+
+    BUTTONS = (END_TURN_BUTTON, POINTLESS_BUTTON)
 
     while running:
         # DRAW MAP
@@ -86,6 +110,11 @@ def main_game_loop(
                 clicked_tile = game_map.get_tile_by_px_click(event.pos[0], event.pos[1])
 
                 if event.button == 1:  # left click - ACTION
+                    if END_TURN_BUTTON.rect.collidepoint(
+                        event.pos
+                    ):  # Check if button clicked
+                        end_turn(active_warlord=human_warlord)
+
                     if HIGHLIGHTED_SQUAD is None:
                         for squad in human_squads:
                             if squad.tile_location == clicked_tile:
@@ -139,6 +168,8 @@ def main_game_loop(
 
             if event.type == pygame.KEYDOWN:
                 print(f"Chosen squad: {HIGHLIGHTED_SQUAD}")
+
+        draw_buttons(screen, pygame.mouse.get_pos(), buttons=BUTTONS)
 
         FPS.tick(FSP_LIMIT)
         pygame.display.update()
