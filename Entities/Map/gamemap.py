@@ -2,7 +2,7 @@ from typing import Optional
 
 from Entities.City.city import CapitalCity, City
 from Entities.Map.NeutralCityTemplate import NeutralCityTemplate
-from Entities.Map.terrain import PLAINS, FOREST
+from Entities.Map.terrain import PLAINS, FOREST, MOUNTAIN
 from Entities.Map.tile import Tile, TileCoordinates
 from Entities.Warlord.warlord import Warlord
 from Enums.exceptions import TileOutOfMapRange, WrongNumberOfWarlordsForMap
@@ -39,11 +39,20 @@ class GameMap:
         self.capital_cities: list[CapitalCity] = []
 
         for x in range(self.x_length):
+            mountain_coordinates = ((7, 2), (8, 3), (9, 4), (5, 3), (4, 3))
+            forest_coordinates = (
+            (7, 3), (8, 4), (9, 5), (2, 3), (2, 2), (1, 1), (1, 2), (3, 3), (5, 3), (4, 4), (5, 4))
             for y in range(self.y_length):
-                if y < 7:
-                    self._tiles.append(Tile(TileCoordinates(x, y), PLAINS))
-                else:
+                if (x, y) in mountain_coordinates:
+                    self._tiles.append(Tile(TileCoordinates(x, y), MOUNTAIN))
+                elif (x, y) in forest_coordinates:
                     self._tiles.append(Tile(TileCoordinates(x, y), FOREST))
+                elif x > 12:
+                    self._tiles.append(Tile(TileCoordinates(x, y), FOREST))
+                elif y > 7 or y < 1:
+                    self._tiles.append(Tile(TileCoordinates(x, y), MOUNTAIN))
+                else:
+                    self._tiles.append(Tile(TileCoordinates(x, y), PLAINS))
 
         self._tiles = tuple(self._tiles)
         self.create_neutral_cities(neutral_cities_template)

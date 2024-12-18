@@ -7,7 +7,7 @@ from Engine.graphics.process_image import resize_image, add_border_to_image
 from Enums.landscape import Landscape
 from settings import TERRAIN_SPRITES_PATH
 from settings import TILE_IMAGE_SIZE_PX
-from Enums.colors import GREEN
+from Enums.colors import GREEN, DARK_RED
 
 
 @attrs.define
@@ -41,3 +41,12 @@ forest_image_path = add_border_to_image(
     rbg_color=GREEN,
 )
 FOREST = Terrain(Landscape.FOREST, 3, forest_image_path)
+forest_image_path = add_border_to_image(
+    resize_image(
+        os.path.join(TERRAIN_SPRITES_PATH, "Mountain.png"),
+        TILE_IMAGE_SIZE_PX,
+        TILE_IMAGE_SIZE_PX,
+    ),
+    rbg_color=DARK_RED,
+)
+MOUNTAIN = Terrain(Landscape.MOUNTAIN, 4, forest_image_path)

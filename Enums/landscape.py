@@ -8,3 +8,4 @@ class Landscape(Enum):
     ICE = 3
     LAVA = 4
     WATER = 5
+    MOUNTAIN = 6
